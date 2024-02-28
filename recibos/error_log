@@ -1,0 +1,6 @@
+[28-Aug-2023 17:47:44 America/Mexico_City] PHP Warning:  A non-numeric value encountered in /home/admin/public_html/connections-samalab/libs/mpdf-5.7-php7-master/mpdf.php on line 32511
+[28-Aug-2023 17:47:44 America/Mexico_City] PHP Warning:  A non-numeric value encountered in /home/admin/public_html/connections-samalab/libs/mpdf-5.7-php7-master/mpdf.php on line 32511
+[28-Aug-2023 17:47:44 America/Mexico_City] PHP Warning:  A non-numeric value encountered in /home/admin/public_html/connections-samalab/libs/mpdf-5.7-php7-master/mpdf.php on line 32511
+[28-Aug-2023 17:47:44 America/Mexico_City] PHP Warning:  A non-numeric value encountered in /home/admin/public_html/connections-samalab/libs/mpdf-5.7-php7-master/mpdf.php on line 32511
+[28-Aug-2023 17:47:44 America/Mexico_City] PHP Warning:  count(): Parameter must be an array or an object that implements Countable in /home/admin/public_html/connections-samalab/libs/mpdf-5.7-php7-master/mpdf.php on line 1770
+[28-Aug-2023 17:47:44 America/Mexico_City] PHP Deprecated:  The each() function is deprecated. This message will be suppressed on further calls in /home/admin/public_html/connections-samalab/libs/mpdf-5.7-php7-master/mpdf.php on line 9143
