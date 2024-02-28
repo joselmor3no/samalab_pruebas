@@ -6,7 +6,7 @@
             <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-            <a href="inicio" class="nav-link"><div style="color:red;">USTED ESTA NAVEGANDO EN MODO PRUEBA</div></a>
+            <a href="inicio" class="nav-link"><div style="color:red;">USTED ESTA NAVEGANDO EN MODO PRUEBA:</div></a>
         </li>
     </ul>
 
