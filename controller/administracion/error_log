@@ -1,3 +1,0 @@
-[30-Jan-2023 19:41:04 America/Mexico_City] PHP Warning:  number_format() expects parameter 1 to be float, string given in /home/admin/public_html/connections-samalab/controller/administracion/administracion.php on line 132
-[30-Jan-2023 19:41:05 America/Mexico_City] PHP Warning:  count(): Parameter must be an array or an object that implements Countable in /home/admin/public_html/connections-samalab/libs/mpdf-5.7-php7-master/mpdf.php on line 1770
-[30-Jan-2023 19:41:05 America/Mexico_City] PHP Deprecated:  The each() function is deprecated. This message will be suppressed on further calls in /home/admin/public_html/connections-samalab/libs/mpdf-5.7-php7-master/mpdf.php on line 9143
