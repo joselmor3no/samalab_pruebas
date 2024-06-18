@@ -4,7 +4,8 @@ session_start();
 $id_sucursal = $_SESSION["id_sucursal"];
 $codigo = $_REQUEST["codigo"];
 
-require_once( $_SERVER["DOCUMENT_ROOT"] . '/libs/mpdf-5.7-php7-master/mpdf.php');
+require_once $_SERVER["DOCUMENT_ROOT"]  . '/vendor/autoload.php'; 
+use Mpdf\Mpdf;
 require_once($_SERVER["DOCUMENT_ROOT"] . '/model/laboratorio/Reportes.php');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/model/admision/Pacientes.php');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/model/Catalogos.php');
@@ -30,7 +31,21 @@ $qr = $catalogos->QR_Generator($contenidoQR);
 $pagos = new Pagos();
 $pago = $pagos->getPagos($codigo, $id_sucursal)[0];
 
-$pdf = new mPDF('UTF-8', array(215.9, 279.4), '8pt', '', 10, 10, 10, 10, 9, 9, 'P');
+$mpdfConfig = [
+    'mode' => 'utf-8',
+    'format' => 'Letter', // Tamaño de página, puedes ajustarlo según tus necesidades
+    'default_font_size' => 8,
+    'margin_left' => 10,
+    'margin_right' => 10,
+    'margin_top' => 10,
+    'margin_bottom' => 10,
+    'margin_header' => 9,
+    'margin_footer' => 9,
+    'orientation' => 'P' // 'P' para retrato, 'L' para paisaje
+];
+
+// Crear instancia de mPDF
+$pdf = new Mpdf($mpdfConfig);
 $pdf->SetTitle("RECIBO-" . $codigo);
 
 if($orden->id_doctor==null)
