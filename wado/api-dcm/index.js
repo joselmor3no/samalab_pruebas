@@ -1,14 +1,13 @@
 'use strict'
-var fs=require("fs");
-var https=require("https")
-//servidor
 
-var app=require('./app');
-var port=3700;
+var http = require("http");
 
-https.createServer({
-    key: fs.readFileSync("d9fb7_3a9a1_f02b79959be403016c1040af7fa0fa88.key"),
-    cert: fs.readFileSync("connectionslab_net_d9fb7_3a9a1_1721001599_b4b98c2fb9a898c456a81c526520a414.crt")
-}, app).listen(port,'connectionslab.net',() =>{
-	console.log('servidor corriendo en 3700')
-})
+// Importar la aplicación de Express
+var app = require('./app');
+
+var port = 3700;
+
+// Crear un servidor HTTP
+http.createServer(app).listen(port, '0.0.0.0', () => {
+    console.log(`Servidor corriendo en el puerto ${port}`);
+});
