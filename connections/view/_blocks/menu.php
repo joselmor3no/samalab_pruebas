@@ -85,8 +85,8 @@ function validarPermisos($permiso) {
                 <?php
                 if (validarPermisos("r1") || validarPermisos("r2") || validarPermisos("r3") || validarPermisos("r4") || validarPermisos("r5") || validarPermisos("r6")) {
                     ?>
-                    <li class="nav-item <?= strpos($url, '/registro') !== false || strpos($url, '/gastos') !== false || strpos($url, 'corte') !== false || strpos($url, '/caja') !== false || strpos($url, 'etiquetas') !== false || strpos($url, 'cotizacion') !== false || strpos($url, 'resultado') !== false ? "menu-open" : "" ?>">
-                        <a href="#" class="nav-link <?= strpos($url, '/registro') !== false || strpos($url, '/gastos') !== false || strpos($url, 'corte') !== false || strpos($url, '/caja') !== false || strpos($url, 'etiquetas') !== false || strpos($url, 'cotizacion') !== false || strpos($url, 'resultado') !== false ? "active" : "" ?>">
+                    <li class="nav-item <?= strpos($url, '/registro') !== false || strpos($url, '/gastos') !== false || strpos($url, 'corte') !== false || strpos($url, '/caja') !== false || strpos($url, 'etiquetas') !== false || strpos($url, 'cotizacion') !== false || strpos($url, 'resultado') !== false ? 'menu-open' : '' ?>">
+                        <a href="#" class="nav-link <?= strpos($url, '/registro') !== false || strpos($url, '/gastos') !== false || strpos($url, 'corte') !== false || strpos($url, '/caja') !== false || strpos($url, 'etiquetas') !== false || strpos($url, 'cotizacion') !== false || strpos($url, 'resultado') !== false ? 'active' : '' ?>">
                             <i class="nav-icon fas fa-address-card"></i>
                             <p>
                                 Admisión
@@ -169,7 +169,7 @@ function validarPermisos($permiso) {
 
                 if (validarPermisos("l1") || validarPermisos("l2") || validarPermisos("l3") || validarPermisos("l4")) {
                     ?>
-                    <li class="nav-item  <?= strpos($url, '/reporte-lab') !== false ? "menu-open" : "" ?>">
+                    <li class="nav-item  <?= strpos($url, '/reporte-lab') !== false ? 'menu-open' : '' ?>">
                         <a href="#" class="nav-link <?= strpos($url, '/reporte-lab') !== false ? "active" : "" ?>">
                             <i class="nav-icon fas fa-microscope"></i>
                             <p>
@@ -232,9 +232,11 @@ function validarPermisos($permiso) {
                 if (validarPermisos("t1") || validarPermisos("t2") || validarPermisos("t3") || validarPermisos("t4") || validarPermisos("t5") || validarPermisos("t6") || validarPermisos("t7")) {
                     ?>
 
-                    <li class="nav-item <?= strpos($url, '/imagen') !== false || strpos($url, '/tecnicos') !== false || strpos($url, '/formatos') !== false || strpos($url, '/conclusion') !== false ? "menu-open" : "" || strpos($url, '/reporte-local') !== false ? "menu-open" : ""  || strpos($url, '/visor-anterior') !== false ? "menu-open" : ""  ?>">
+                    <li class="nav-item <?= (strpos($url, '/imagen') !== false || strpos($url, '/tecnicos') !== false || strpos($url, '/formatos') !== false || strpos($url, '/conclusion') !== false) ? "menu-open" : (strpos($url, '/reporte-local') !== false ? "menu-open" : (strpos($url, '/visor-anterior') !== false ? "menu-open" : "")) ?>">
 
-                        <a href="#" class="nav-link <?= strpos($url, '/imagen') !== false || strpos($url, '/tecnicos') !== false || strpos($url, '/formatos') !== false || strpos($url, 'conclusion') !== false ? "active" : "" || strpos($url, 'reporte-local') !== false ? "active" : "" || strpos($url, 'visor-anterior') !== false ? "active" : "" ?>">
+
+                        <a href="#" class="nav-link <?= (strpos($url, '/imagen') !== false || strpos($url, '/tecnicos') !== false || strpos($url, '/formatos') !== false || strpos($url, '/conclusion') !== false) ? "active" : ((strpos($url, '/reporte-local') !== false) ? "active" : ((strpos($url, '/visor-anterior') !== false) ? "active" : "")) ?>">
+
                             <i class="nav-icon fas fa-skull-crossbones"></i>
                             <p>
                                 Imagenología

@@ -269,11 +269,12 @@ class Reporte {
             }
         }
 
-        $formatos[] = count($bh) > 0 ? "BH" : "";
-        $formatos[] = count($ego) > 0 ? "EGO" : "";
-        $formatos[] = count($estandar) > 0 ? "ESTANDAR" : "";
-        $formatos[] = count($paquete) > 0 ? "PAQUETE" : "";
-        $formatos[] = count($texto) > 0 ? "TEXTO" : "";
+     
+        $formatos[] = is_array($bh) && count($bh) > 0 ? "BH" : "";
+        $formatos[] = is_array($ego) && count($ego) > 0 ? "EGO" : "";
+        $formatos[] = is_array($estandar) && count($estandar) > 0 ? "ESTANDAR" : "";
+        $formatos[] = is_array($paquete) && count($paquete) > 0 ? "PAQUETE" : "";
+        $formatos[] = is_array($texto) && count($texto) > 0 ? "TEXTO" : "";
 
         $reportes->close();
         header('Content-Type: application/json; charset=utf-8');

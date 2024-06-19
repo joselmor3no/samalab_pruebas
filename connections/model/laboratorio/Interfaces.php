@@ -4,16 +4,19 @@ require_once( $_SERVER["DOCUMENT_ROOT"] . '/model/Conexion.php');
 class Interfaces {
 
 	public function getArchivoSucursal($codigo_sucursal){
-		$directorio=opendir($_SERVER["DOCUMENT_ROOT"] . '/interfaces/'.$codigo_sucursal."/");
-		//recoger los  datos
-		while ($archivo = readdir($directorio)) { 
-		  if(($archivo != '.')&&($archivo != '..')){
-		     if(strpos($archivo,$codigo_sucursal)>0){
-		     	return 1;
-		     }
-		  } 
+		if(file_exists($_SERVER["DOCUMENT_ROOT"] . '/interfaces/'.$codigo_sucursal."/")){
+			$directorio=opendir($_SERVER["DOCUMENT_ROOT"] . '/interfaces/'.$codigo_sucursal."/");
+			//recoger los  datos
+			while ($archivo = readdir($directorio)) { 
+			if(($archivo != '.')&&($archivo != '..')){
+				if(strpos($archivo,$codigo_sucursal)>0){
+					return 1;
+				}
+			} 
+			}
+			closedir($directorio);
 		}
-		closedir($directorio);
+		
 		return 0;
 	}
 

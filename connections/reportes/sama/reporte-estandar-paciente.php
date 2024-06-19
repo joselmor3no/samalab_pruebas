@@ -4,7 +4,9 @@ session_start();
 $id_sucursal = $_SESSION["id_sucursal"];
 
 
-require_once($_SERVER["DOCUMENT_ROOT"] . '/libs/mpdf-5.7-php7-master/mpdf.php');
+require_once $_SERVER["DOCUMENT_ROOT"]  . '/vendor/autoload.php'; 
+use Mpdf\Mpdf;
+
 require_once($_SERVER["DOCUMENT_ROOT"] . '/model/laboratorio/Reportes.php');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/controller/laboratorio/Reporte.php'); 
 require_once( $_SERVER["DOCUMENT_ROOT"] . '/model/Catalogos.php');
@@ -52,7 +54,22 @@ if (count($estandar) == 0) {
 }
 
 
-$pdf = new mPDF('UTF-8', 'Letter', $formato->punto, strtolower($formato->fuente));
+$formato = (object) [
+    'punto' => 8, // Ejemplo de tamaño de fuente
+    'fuente' => 'Arial' // Ejemplo de tipo de fuente
+];
+
+// Configuración para mPDF 8
+$config = [
+    'mode' => 'utf-8',
+    'format' => 'Letter',
+    'default_font_size' => $formato->punto,
+    'default_font' => strtolower($formato->fuente),
+];
+
+// Crear instancia de Mpdf
+$pdf = new Mpdf($config);
+
 $pdf->SetTitle("REPORTE-ESTANDAR-" . $codigo);
 
 $pdf->setAutoTopMargin = 'stretch';
@@ -75,8 +92,7 @@ if ($formato->color_linea == "Negro") {
 }
 
 $edad = $paciente->edad . " " . strtoupper($paciente->tipo_edad != "Anios" ? $paciente->tipo_edad : "AÑOS") . " / " . strtoupper($paciente->sexo != "Nino" ? $paciente->sexo : "NIÑO(A)");
-
-$age = $paciente->edad . " " . ($paciente->tipo_edad != "Anios" ? $paciente->tipo_edad : "Years") . " / " . ($paciente->sexo == "Nino" ? "Child" : $paciente->sexo == "Masculino" ? "Male" : "Female");
+$age = $paciente->edad . " " .($paciente->tipo_edad != "Anios" ? $paciente->tipo_edad : "Years") . " / " . ($paciente->sexo == "Nino" ? "Child" : ($paciente->sexo == "Masculino" ? "Male" : "Female"));
 
 
 if($id_sucursal == 151){

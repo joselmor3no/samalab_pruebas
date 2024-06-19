@@ -361,16 +361,18 @@ class Imagen {
                 <td  style="text-align:center;">';
                     //$directorioZIP='../wado/uploads/discoDuro1/'.$_SESSION['ruta'];
                     if($item->local=="J"){
-                        $rutaD='../wado/uploads/discoDuro1/'.$item->prefijo_imagen.'_comprimidos/'.$item->ruta;
+                        $rutaD=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$item->prefijo_imagen.'_comprimidos/'.$item->ruta;
                     }
                     elseif($item->local=="N" && ($item->cerrado==null || $item->cerrado==0)){
-                        $rutaD='../wado/uploads/discoDuro1/'.$item->prefijo_imagen.'/'.$item->ruta;
+                        $rutaD=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$item->prefijo_imagen.'/'.$item->ruta;
                     }
                     elseif($item->local=="N" && $item->cerrado==1){
-                        $rutaD='../wado/uploads/discoDuro1/'.$item->prefijo_imagen.'_pacientes/'.$item->ruta;
+                        $rutaD=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$item->prefijo_imagen.'_pacientes/'.$item->ruta;
                     }
                     $directorioZIP=$rutaD.'/'.$item->archivo_zip;
-                    $directorioZIPG=str_replace("..","https://connectionslab.net",$rutaD).'/'.$item->archivo_zip;
+                    $directorioZIPG=$rutaD.'/'.$item->archivo_zip;
+
+                    
                     $pesoZip= filesize($directorioZIP)/1024/1024;
                     if($pesoZip>$item->tamano_zip){
                         echo '<a href="'.$directorioZIPG.'"><button type="button" class="btn btn-sm btn-primary rounded-circle m-1" data-toggle="tooltip" title="Descargar zip">
@@ -394,11 +396,11 @@ class Imagen {
                         echo '
                         <div class="row">
                             <input type="hidden" name="reporte" value="" class="d-none">
-                            <button type="submit" class="btn btn-sm btn-warning rounded-circle m-1" data-toggle="tooltip" title="Reporte en Gabinete" onclick="window.open(\'https://reporte.imagen.connectionslab.net/'.$_SESSION['ruta'].'/reporte/imprimir_rdcm.php?dcm='.$item->dcm.'&p=0\')">
+                            <button type="submit" class="btn btn-sm btn-warning rounded-circle m-1" data-toggle="tooltip" title="Reporte en Gabinete" onclick="window.open(\'https://reporte.imagen.connectionslab5.net/'.$_SESSION['ruta'].'/reporte/imprimir_rdcm.php?dcm='.$item->dcm.'&p=0\')">
                                 <i class="fas fa-file-pdf"></i>
                             </button>
                            <input type="hidden" name="reportegabinete" value="" class="d-none">
-                            <button type="submit" class="btn btn-sm btn-success rounded-circle m-1" data-toggle="tooltip" title="Reporte Cliente" onclick="window.open(\'https://reporte.imagen.connectionslab.net/'.$_SESSION['ruta'].'/reporte/imprimir_rdcm.php?dcm='.$item->dcm.'&p=1\')">
+                            <button type="submit" class="btn btn-sm btn-success rounded-circle m-1" data-toggle="tooltip" title="Reporte Cliente" onclick="window.open(\'https://reporte.imagen.connectionslab5.net/'.$_SESSION['ruta'].'/reporte/imprimir_rdcm.php?dcm='.$item->dcm.'&p=1\')">
                                 <i class="fas fa-file-pdf"></i>
                             </button>   
                             <div class="btn btn-sm btn-info rounded-circle m-1 mail" data-paciente="'.$item->paciente.'" data-correo="'.$item->email.'" data-id="'.$item->id_orden.'" data-expediente="'.$item->exp.'"  data-toggle="tooltip" title="Mail">
@@ -444,7 +446,7 @@ class Imagen {
                         echo 'CONCLUIDO';
             echo '</td>';
             if($visor!=1)
-                    echo '<td><a href="https://reporte.imagen.connectionslab.net/arceo/'.$item->ruta_archivo.'" target="_blank">Descargar</td>';
+                    echo '<td><a href="https://reporte.imagen.connectionslab5.net/arceo/'.$item->ruta_archivo.'" target="_blank">Descargar</td>';
             echo '</tr>';
         }
     }  
@@ -507,11 +509,11 @@ class Imagen {
                         echo '
                         <div class="row">
                             <input type="hidden" name="reporte" value="" class="d-none">
-                            <button type="submit" class="btn btn-sm btn-warning rounded-circle m-1" data-toggle="tooltip" title="Reporte en Gabinete" onclick="window.open(\'https://reporte.imagen.connectionslab.net/'.$_SESSION['ruta'].'/reporte/imprimir_rdcm.php?dcm='.$item->dcm.'&p=0\')">
+                            <button type="submit" class="btn btn-sm btn-warning rounded-circle m-1" data-toggle="tooltip" title="Reporte en Gabinete" onclick="window.open(\'https://reporte.imagen.connectionslab5.net/'.$_SESSION['ruta'].'/reporte/imprimir_rdcm.php?dcm='.$item->dcm.'&p=0\')">
                                 <i class="fas fa-file-pdf"></i>
                             </button>
                            <input type="hidden" name="reportegabinete" value="" class="d-none">
-                            <button type="submit" class="btn btn-sm btn-success rounded-circle m-1" data-toggle="tooltip" title="Reporte Cliente" onclick="window.open(\'https://reporte.imagen.connectionslab.net/'.$_SESSION['ruta'].'/reporte/imprimir_rdcm.php?dcm='.$item->dcm.'&p=1\')">
+                            <button type="submit" class="btn btn-sm btn-success rounded-circle m-1" data-toggle="tooltip" title="Reporte Cliente" onclick="window.open(\'https://reporte.imagen.connectionslab5.net/'.$_SESSION['ruta'].'/reporte/imprimir_rdcm.php?dcm='.$item->dcm.'&p=1\')">
                                 <i class="fas fa-file-pdf"></i>
                             </button>   
                         </div> 
@@ -583,13 +585,13 @@ class Imagen {
                 }
                 elseif($item->reportado!=null && $item->cerrado==0){
                     echo '
-                    <button class="btn btn-warning btn-sm" onclick="window.open(\'https://reporte.imagen.connectionslab.net/'.$_SESSION['ruta'].'/reporte/imprimir_rdcm.php?dcm='.$item->dcm.'&p=0\')">Imprimir</button><hr/>
+                    <button class="btn btn-warning btn-sm" onclick="window.open(\'https://reporte.imagen.connectionslab5.net/'.$_SESSION['ruta'].'/reporte/imprimir_rdcm.php?dcm='.$item->dcm.'&p=0\')">Imprimir</button><hr/>
                     <button class="btn btn-success btn-sm btn-concluir-local" data-dcm="'.$item->dcm.'">Concluir</button>';
                 }
                 elseif($item->reportado!=null && $item->cerrado==1){
                     echo '
-                    <button class="btn btn-warning btn-sm" onclick="window.open(\'https://reporte.imagen.connectionslab.net/'.$_SESSION['ruta'].'/reporte/imprimir_rdcm.php?dcm='.$item->dcm.'&p=0\')">Imprimir</button><hr/>
-                    <button class="btn btn-success btn-sm" onclick="window.open(\'https://reporte.imagen.connectionslab.net/'.$_SESSION['ruta'].'/reporte/imprimir_rdcm.php?dcm='.$item->dcm.'&p=1\')">Paciente</button>';
+                    <button class="btn btn-warning btn-sm" onclick="window.open(\'https://reporte.imagen.connectionslab5.net/'.$_SESSION['ruta'].'/reporte/imprimir_rdcm.php?dcm='.$item->dcm.'&p=0\')">Imprimir</button><hr/>
+                    <button class="btn btn-success btn-sm" onclick="window.open(\'https://reporte.imagen.connectionslab5.net/'.$_SESSION['ruta'].'/reporte/imprimir_rdcm.php?dcm='.$item->dcm.'&p=1\')">Paciente</button>';
                 }
             echo '</td>
             </tr>';
