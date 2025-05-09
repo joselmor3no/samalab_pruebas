@@ -61,11 +61,11 @@ class Listas {
 
 
         $sql = "SELECT * FROM (
-                SELECT id, no_paquete AS codigo, nombre, alias, 'paquete' AS tipo, precio FROM paquete WHERE id_sucursal = '$id_sucursal' AND activo = 1
+                SELECT id, no_paquete AS codigo, nombre, alias, 'paquete' AS tipo, precio FROM paquete WHERE id_sucursal = '121' AND activo = 1
                 UNION
                 SELECT cat_estudio.id, cat_estudio.no_estudio, cat_estudio.nombre_estudio, cat_estudio.alias ,'estudio', estudio.precio_publico FROM estudio
                 INNER JOIN cat_estudio ON (estudio.id_cat_estudio = cat_estudio.id)
-                WHERE estudio.id_sucursal = '$id_sucursal' AND estudio.activo = 1
+                WHERE estudio.id_sucursal = '121' AND estudio.activo = 1
             ) AS consulta
             WHERE alias = '$palabra' OR nombre LIKE '%$palabra%' OR codigo = '$palabra' ";
 

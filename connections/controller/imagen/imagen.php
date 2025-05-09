@@ -36,11 +36,35 @@ class Imagen {
 
     }
 
+    public function listaEstudiosXmes($fechaInicial,$fechaFinal){
+        $imagenM = new Imagenm();
+        $respuesta=$imagenM->mdlListaEstudiosXmes($fechaInicial,$fechaFinal);
+        $totalGeneral=$totalCantidad=0;
+        $tabla="";
+        foreach ($respuesta AS $row=>$item) {
+            $totalGeneral+=$item->total;
+            $totalCantidad+=$item->cantidad;
+            $tabla.= '<tr>
+                    <td>'.($row+1).'</td>
+                    <td>'.$item->no_estudio.'</td>
+                    <td>'.$item->nombre_estudio.'</td>
+                    <td>'.$item->cantidad.'</td>
+                    <td>'.$item->pago_directo_imagen.'</td>
+                    <td>'.$item->total.'</td>
+                </tr>';
+        }
+
+        $respuesta["tabla"]=$tabla;
+        $respuesta["totalGeneral"]=$totalGeneral;
+        $respuesta["totalCantidad"]=$totalCantidad;
+        return $respuesta;
+    }
+
     public function asignarEstudioDental(){
         $catalogos = new Catalogos();
         $sucursal=$catalogos->getSucursal($_SESSION["id_sucursal"])[0];
-        $origen='../../../wado/uploads/discoDuro1/'.$sucursal->prefijo_imagen.'_dental/'.$_REQUEST['ruta'];
-        $destino='../../../wado/uploads/discoDuro1/'.$sucursal->prefijo_imagen.'/'.$_REQUEST['ruta'];
+        $origen=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$sucursal->prefijo_imagen.'_dental/'.$_REQUEST['ruta'];
+        $destino=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$sucursal->prefijo_imagen.'/'.$_REQUEST['ruta'];
         if(file_exists($origen)){
             mkdir($destino);
             rename($origen, $destino."/".$_REQUEST['ruta']);
@@ -141,8 +165,8 @@ class Imagen {
 
     public function quitarConclusionDCM(){
         $imagenM = new Imagenm();
-        $destino='../../../wado/uploads/discoDuro1/'.$_REQUEST['ruta'].'/'.$_REQUEST['nombrep'].'/';
-        $origen='../../../wado/uploads/discoDuro1/'.$_REQUEST['ruta'].'_pacientes/'.$_REQUEST['nombrep'].'/';
+        $destino=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$_REQUEST['ruta'].'/'.$_REQUEST['nombrep'].'/';
+        $origen=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$_REQUEST['ruta'].'_pacientes/'.$_REQUEST['nombrep'].'/';
         if(rename($origen,$destino) || $_SESSION['ruta']=='savi'){
             $imagenM->quitarConclusionDCM($_REQUEST['id_dcm']);
         }
@@ -150,8 +174,8 @@ class Imagen {
 
     public function concluirDCM(){
         $imagenM = new Imagenm();
-        $origen='../../../wado/uploads/discoDuro1/'.$_REQUEST['ruta'].'/'.$_REQUEST['nombrep'].'/';
-        $destino='../../../wado/uploads/discoDuro1/'.$_REQUEST['ruta'].'_pacientes/'.$_REQUEST['nombrep'].'/';
+        $origen=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$_REQUEST['ruta'].'/'.$_REQUEST['nombrep'].'/';
+        $destino=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$_REQUEST['ruta'].'_pacientes/'.$_REQUEST['nombrep'].'/';
         if(rename($origen,$destino)){
             $imagenM->concluirDCM($_REQUEST['id_dcm']);
         }
@@ -177,12 +201,12 @@ class Imagen {
 
     public function descomprimirDCM(){
         $imagenM = new Imagenm();
-        $origen='../../../wado/uploads/discoDuro1/'.$_REQUEST['ruta'].'_comprimidos/'.$_REQUEST['nombrep'].'/';
+        $origen=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$_REQUEST['ruta'].'_comprimidos/'.$_REQUEST['nombrep'].'/';
         //$_REQUEST['zip']
         if(file_exists($origen."AppFiles.zip")){
             $nombreZIP=explode(".",$_REQUEST['zip']);
-            $destino='../../../wado/uploads/discoDuro1/'.$_REQUEST['ruta'].'/'.$_REQUEST['nombrep'];
-            mkdir($destino);
+            $destino=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$_REQUEST['ruta'].'/'.$_REQUEST['nombrep'];
+            mkdir($destino, 0777, true);
             rename($origen.'/'.$_REQUEST['zip'],$destino.'/_'.$_REQUEST['zip']);
             $zip = new ZipArchive;
             $comprimido= $zip->open($destino."/_".$_REQUEST['zip']);
@@ -198,7 +222,7 @@ class Imagen {
         }
         else{
             $nombreZIP=explode(".",$_REQUEST['zip']);
-            $destino='../../../wado/uploads/discoDuro1/'.$_REQUEST['ruta'].'/'.$_REQUEST['nombrep'];
+            $destino=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$_REQUEST['ruta'].'/'.$_REQUEST['nombrep'];
             rename($origen,$destino);
             $zip = new ZipArchive;
             $comprimido= $zip->open($destino."/".$_REQUEST['zip']);
@@ -254,21 +278,23 @@ class Imagen {
         echo 'Se ha borrado el directorio '.$dir.'<br/>';
         @rmdir($dir);
     }
-    function eliminaArchivosNoDCM($carpeta){
+    
+    function eliminaArchivosNoDCM($carpeta) {
         if (is_file($carpeta)) {
-            $nombre=explode(".",$carpeta);
-            if($nombre[7]!="dcm"){
+            $extension = pathinfo($carpeta, PATHINFO_EXTENSION);
+            if (strtolower($extension) !== 'dcm') {
                 unlink($carpeta);
             }
-            return; 
-        }
-        elseif (is_dir($carpeta)) {
+        } elseif (is_dir($carpeta)) {
             $scan = glob(rtrim($carpeta, '/').'/*');
-            foreach($scan as $index=>$path) {
+            foreach ($scan as $path) {
+                if (basename($path) === '.' || basename($path) === '..') {
+                    continue;
+                }
                 $this::eliminaArchivosNoDCM($path);
             }
-            return "ok";
         }
+        return "ok";
     }
 
     public function listaPacientesDental($fechaInicial,$fechaFinal){
@@ -276,7 +302,7 @@ class Imagen {
         $catalogos = new Catalogos();
         $data = $imagenM->listaPacientesDentalR($fechaInicial,$fechaFinal);
         $sucursal=$catalogos->getSucursal($_SESSION["id_sucursal"])[0];
-        $ruta='../wado/uploads/discoDuro1/'.$sucursal->prefijo_imagen.'_dental/';
+        $ruta=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$sucursal->prefijo_imagen.'_dental/';
          foreach ($data AS $row=>$item) {
             echo '<tr>
                     <td>'.$item->consecutivo.'</td>
@@ -332,6 +358,104 @@ class Imagen {
       echo "<br>No es ruta valida";
 }
 
+    public function listaPacientesDentales($fechaInicial,$fechaFinal){
+        $imagenM = new Imagenm();
+        $pacientes = $imagenM->listaPacientesDentales($fechaInicial,$fechaFinal); 
+        foreach ($pacientes AS $row=>$item) {
+            echo '<tr>
+                <td>'.($row+1).'</td>
+                <td>'.$item->consecutivo.'</td>
+                <td>'.$item->paciente.'</td>
+                <td>'.$item->fecha_registro.'</td>
+                <td>('.$item->codigo.')-'.$item->nombre_estudio.'</td>
+                <td>'.$item->nombre_sucursal.'</td>';
+                //--------------------ZIP
+                echo '<td>';
+                    if($item->local=="J"){
+                        $rutaD=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$item->prefijo_imagen.'_comprimidos/'.$item->ruta;
+                        
+                    }   
+                    elseif($item->local=="N" && ($item->cerrado==null || $item->cerrado==0)){
+                        $rutaD=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$item->prefijo_imagen.'/'.$item->ruta;
+                        $rutaDescargaZip='/wado/uploads/discoDuro1/'.$item->prefijo_imagen.'/'.$item->ruta.'/'.$item->archivo_zip;
+                    }
+                    elseif($item->local=="N" && $item->cerrado==1){
+                        $rutaD=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$item->prefijo_imagen.'_pacientes/'.$item->ruta;
+                        $rutaDescargaZip='/wado/uploads/discoDuro1/'.$item->prefijo_imagen.'_pacientes/'.$item->ruta.'/'.$item->archivo_zip;
+                    }
+                    $directorioZIP=$rutaD.'/'.$item->archivo_zip;
+                    $directorioZIPG=$rutaD.'/'.$item->archivo_zip;
+                    $pesoZip= filesize($directorioZIP)/1024/1024; 
+                    if($item->archivo_zip!=''){                    
+                        if($pesoZip>$item->tamano_zip && $item->archivo_zip!=""){
+                            echo '<a href="'.$rutaDescargaZip.'"><button type="button" class="btn btn-sm btn-primary rounded-circle m-1" data-toggle="tooltip" title="Descargar zip">
+                                <i class="fas fa-file-archive"></i>
+                            </button></a>';
+                        }
+                        else{
+                            echo '<button type="button" class="btn btn-sm btn-danger rounded-circle m-1" data-toggle="tooltip" title="Descargar zip">
+                                <i class="fas fa-sync"></i>
+                            </button>';
+                        }
+                    }
+                    else
+                        echo '-';
+                echo '</td>';
+                //-------------------------IMAGENES
+                echo '<td style="text-align:center;">';
+                    
+                    if($pesoZip>$item->tamano_zip && $item->local=="J"){
+                        echo '<button class="btn btn-secondary btn-sm btn-descomprimir" data-id_dcm="'.$item->dcm.'" data-nombrep="'.$item->ruta.'" data-ruta="'.$item->prefijo_imagen.'" data-zip="'.$item->archivo_zip.'">Descomprimir</button>';
+                    }
+                    elseif($pesoZip>$item->tamano_zip && $item->local=="N"){
+                        $rutaImagenes=$rutaD.'/'.$item->ruta;
+                        $archivoDCM=1;
+                        if (is_dir($rutaImagenes)) {
+                            // Buscar archivos con extensión .jpg en la carpeta
+                            $imagenes = glob($rutaImagenes . "/*.jpg");
+                            if (!empty($imagenes)) {
+                                $archivoDCM=0;
+                            } 
+                        }
+                        $redirige="redirige_visor";
+                        if($archivoDCM==1){
+                            echo '<a target="blank_" href="'.$redirige.'.php?nombre='.$item->ruta.'&cerrado='.$item->cerrado.'&prefijo_sucursal='.$item->prefijo_imagen.'&id_dcm='.$item->dcm.'&usuario='.$_SESSION["id"].'&ruta='.$_SESSION['ruta'].'&id_sucursal='.$item->id_sucursal.'">
+                                <button class="btn btn-sm btn-info rounded-circle m-1 delete-empresa" data-id="" data-nombre="" data-toggle="tooltip" title="Visor DCM" >
+                                <i class="far fa-eye"></i>
+                                </button>
+                            </a>';
+                        }
+                        
+                    }
+                    else{
+                        echo '-';
+                    }
+                    
+            echo '</td><td>';
+                if($item->archivo_zip=='' && $item->ruta!=''){
+                    $rutaImagenes=$rutaD.'/'.$item->ruta;
+                    if (is_dir($rutaImagenes)) {
+                        // Buscar archivos con extensión .jpg en la carpeta
+                        $imagenes = glob($rutaImagenes . "/*.jpg");
+                    
+                        // Si hay imágenes, generar los enlaces
+                        if (!empty($imagenes)) {
+                            foreach ($imagenes as $imagen) {
+                                $nombreImagen = basename($imagen); // Obtener el nombre del archivo
+                                $imagen=str_replace("var/www/vhosts/connectionslab5.net/httpdocs/connections/","",$imagen);
+                                echo '<a href="' . $imagen . '" target="_blank">' . $nombreImagen . '</a><br>';
+                            }
+                        } else {
+                            echo "-";
+                        }
+                    }
+                }
+            echo '</td></tr>
+            ';
+        }
+        
+    }
+
     public function listaPacientesMedico($fechaInicial,$fechaFinal,$visor){
     	$imagenM = new Imagenm();
         $data = $imagenM->listaPacientesMedicoR($fechaInicial,$fechaFinal,"m"); 
@@ -359,23 +483,26 @@ class Imagen {
                 <td style="color:'.$color.';">('.$item->codigo.')-'.$item->nombre_estudio.'</td>
                 <td>'.$item->sucursal.'</td>
                 <td  style="text-align:center;">';
-                    //$directorioZIP='../wado/uploads/discoDuro1/'.$_SESSION['ruta'];
+                    //$directorioZIP=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$_SESSION['ruta'];
                     if($item->local=="J"){
                         $rutaD=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$item->prefijo_imagen.'_comprimidos/'.$item->ruta;
-                    }
+                        
+                    }   
                     elseif($item->local=="N" && ($item->cerrado==null || $item->cerrado==0)){
                         $rutaD=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$item->prefijo_imagen.'/'.$item->ruta;
+                        $rutaDescargaZip='/wado/uploads/discoDuro1/'.$item->prefijo_imagen.'/'.$item->ruta.'/'.$item->archivo_zip;
                     }
                     elseif($item->local=="N" && $item->cerrado==1){
                         $rutaD=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$item->prefijo_imagen.'_pacientes/'.$item->ruta;
+                        $rutaDescargaZip='/wado/uploads/discoDuro1/'.$item->prefijo_imagen.'_pacientes/'.$item->ruta.'/'.$item->archivo_zip;
                     }
                     $directorioZIP=$rutaD.'/'.$item->archivo_zip;
                     $directorioZIPG=$rutaD.'/'.$item->archivo_zip;
 
                     
                     $pesoZip= filesize($directorioZIP)/1024/1024;
-                    if($pesoZip>$item->tamano_zip){
-                        echo '<a href="'.$directorioZIPG.'"><button type="button" class="btn btn-sm btn-primary rounded-circle m-1" data-toggle="tooltip" title="Descargar zip">
+                    if($pesoZip>$item->tamano_zip && $item->archivo_zip!=""){
+                        echo '<a href="'.$rutaDescargaZip.'"><button type="button" class="btn btn-sm btn-primary rounded-circle m-1" data-toggle="tooltip" title="Descargar zip">
                             <i class="fas fa-file-archive"></i>
                         </button></a>';
                     }
@@ -416,9 +543,10 @@ class Imagen {
                     if($pesoZip>$item->tamano_zip && $item->local=="J"){
                         echo '<button class="btn btn-secondary btn-sm btn-descomprimir" data-id_dcm="'.$item->dcm.'" data-nombrep="'.$item->ruta.'" data-ruta="'.$item->prefijo_imagen.'" data-zip="'.$item->archivo_zip.'">Descomprimir</button>';
                     }
-                    elseif($pesoZip>$item->tamano_zip && $item->local=="N"){
+                    elseif($pesoZip>$item->tamano_zip && $item->local=="N" ){
                         //$_REQUEST['nombre'],$_REQUEST['cerrado'],$_REQUEST['prefijo_sucursal'],$_REQUEST['id_dcm'],
                         //$_REQUEST['usuario'],$_REQUEST['ruta']
+                        
                         if($visor==1)
                             $redirige="redirige_visor";
                         else
@@ -479,21 +607,23 @@ class Imagen {
                 <td style="color:'.$color.';">('.$item->codigo.')-'.$item->nombre_estudio.'</td>
                 <td  style="text-align:center;">';
                     if($item->local=="J"){
-                        $rutaD='../wado/uploads/discoDuro1/'.$item->prefijo_imagen.'_comprimidos/'.$item->ruta;
+                        $rutaD=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$item->prefijo_imagen.'_comprimidos/'.$item->ruta;
                     }
                     elseif($item->local=="N" && ($item->cerrado==null || $item->cerrado==0)){
-                        $rutaD='../wado/uploads/discoDuro1/'.$item->prefijo_imagen.'/'.$item->ruta;
+                        $rutaD=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$item->prefijo_imagen.'/'.$item->ruta;
+                        $rutaDescargaZip='/wado/uploads/discoDuro1/'.$item->prefijo_imagen.'/'.$item->ruta.'/'.$item->archivo_zip;
                     }
                     elseif($item->local=="N" && $item->cerrado==1){
-                        $rutaD='../wado/uploads/discoDuro1/'.$item->prefijo_imagen.'_pacientes/'.$item->ruta;
+                        $rutaD=$_SERVER["DOCUMENT_ROOT"].'/wado/uploads/discoDuro1/'.$item->prefijo_imagen.'_pacientes/'.$item->ruta;
+                        $rutaDescargaZip='/wado/uploads/discoDuro1/'.$item->prefijo_imagen.'_pacientes/'.$item->ruta.'/'.$item->archivo_zip;
                     }
                     $directorioZIP=$rutaD.'/'.$item->archivo_zip;
-                    $directorioZIPG=str_replace("..","https://connectionslab.net",$rutaD).'/'.$item->archivo_zip;
+                    $directorioZIPG=str_replace("..","https://connectionslab5.net",$rutaD).'/'.$item->archivo_zip;
                     $pesoZip= filesize($directorioZIP)/1024/1024;
-                    if($pesoZip>$item->tamano_zip){
-                        echo '<a href="'.$directorioZIPG.'"><button type="button" class="btn btn-sm btn-primary rounded-circle m-1" data-toggle="tooltip" title="Descargar zip">
-                            <i class="fas fa-file-archive"></i>
-                        </button></a>';
+                    if($pesoZip>$item->tamano_zip && $item->archivo_zip!=""){
+                        echo '<a href="'.$rutaDescargaZip.'"><button type="button" class="btn btn-sm btn-primary rounded-circle m-1" data-toggle="tooltip" title="Descargar zip">
+                        <i class="fas fa-file-archive"></i>
+                         </button></a>';
                     }
                     else{
                         echo '<button type="button" class="btn btn-sm btn-danger rounded-circle m-1" data-toggle="tooltip" title="Descargar zip">

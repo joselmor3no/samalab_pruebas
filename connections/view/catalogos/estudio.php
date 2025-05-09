@@ -340,6 +340,7 @@
                                     <th class="text-center">Capturable</th>
                                     <th class="text-center">Imprimible</th>
                                     <th class="text-center">Tipo</th>
+                                    <th class="text-center">Interfaz Letra</th>
                                     <th></th>
 
                                 </tr>
@@ -354,6 +355,15 @@
                                         <td align="center"><?= $row->capturable == "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>' ?></td>
                                         <td align="center"><?= $row->imprimible == "1" ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>' ?></td>
                                         <td align="center"><?= $row->tipo_componente ?></td>
+                                        <td align="center" width="15%">
+                                            <div class="row">
+                                                <div class="col-7"><input type="text" class="form-control" id="interfaz_letra<?= $row->id ?>"  value="<?= $row->interfaz_letra ?>"></div>
+                                                <div class="col-5"><button title="Actualiza Interfaz Letra" data-idIl="interfaz_letra<?= $row->id ?>" data-id="<?= $row->id ?>"   class="btn btn-info btn-sm rounded-circle btn_actualiza_il"><i class="fas fa-sync"></i>
+                                                </button></div>
+                                            </div>
+                                            
+                                    
+                                        </td>
                                         <td>
                                             <button type="button" class="btn btn-warning btn-sm rounded-circle mr-2 new-component" data-id="<?= $row->id ?>" data-nombre="<?= $row->componente ?>" data-toggle="tooltip" title="Editar"><i class="fas fa-edit"></i></button>
                                             <button type="button" class="btn btn-danger btn-sm rounded-circle delete-component" data-id="<?= $row->id ?>" data-nombre="<?= $row->componente ?>" data-toggle="tooltip" title="Eliminar"><i class="fas fa-trash"></i></button>

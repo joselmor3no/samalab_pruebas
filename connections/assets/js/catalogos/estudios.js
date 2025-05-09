@@ -1,5 +1,33 @@
 
 $(document).ready(function () {
+
+    $(".btn_actualiza_il").click(function(){
+        var id=$(this).attr("data-idIl");
+        var datos = new FormData();
+        datos.append("id_componente", $(this).attr("data-id"));
+        datos.append("interfaz_letra", $('#'+id).val());
+        $.ajax({
+            url: "controller/catalogos/Estudio?opc=actualiza-interfaz-letra",
+            type: "POST",
+            data: datos,
+            processData: false,
+            contentType: false,
+            dataType: "json",
+            success: function (data) {
+                toastr.success("Operación Exitosa");
+                $('#toast-container').addClass('toast-top-center');
+                $('#toast-container').removeClass('toast-top-right');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+        });
+    
+    })
+
+
     if ($("#msg").val() == "ok") {
         toastr.success("Operación Exitosa");
         $('#toast-container').addClass('toast-top-center');

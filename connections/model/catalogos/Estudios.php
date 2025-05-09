@@ -19,6 +19,13 @@ class Estudios {
         $this->conexion = new Conexion();
     }
 
+
+    function actualizaInterfazLetraM($idComponente,$interfazLetra){
+        $sql = "UPDATE componente SET interfaz_letra = '" . $interfazLetra. "' WHERE id = '" . $idComponente . "'";
+        $this->conexion->setQuery($sql);
+        return "ok";
+    }
+
     function addEstudio($data) {
         $sql = "INSERT INTO `estudio`( `precio_publico`, `montaje`, `procesos`, `id_referencia`, `metodo_utilizado`, `volumen_requerido`, "
                 . "`id_indicaciones`, `id_sucursal`, `id_cat_estudio`, porcentaje, id_tipo_reporte, precio_maquila, clase) "
@@ -59,7 +66,7 @@ class Estudios {
             FROM estudio
             INNER JOIN cat_estudio ON (cat_estudio.id = estudio.id_cat_estudio) 
             LEFT JOIN clases_estudio_ec ces on ces.id=estudio.clase 
-            WHERE estudio.id_sucursal = '$id_sucursal' AND cat_estudio.id_secciones != 67  AND estudio.activo = 1 
+            WHERE  cat_estudio.id_secciones != 67  AND estudio.activo = 1 and estudio.id_sucursal=".$id_sucursal."
             ORDER BY cat_estudio.nombre_estudio ";
 
         $data = $this->conexion->getQuery($sql);
@@ -90,7 +97,7 @@ class Estudios {
         //Estudios no registrados
         $sql = "SELECT cat_estudio.* 
             FROM cat_estudio
-            LEFT JOIN estudio ON (cat_estudio.id = estudio.id_cat_estudio AND estudio.id_sucursal = $id_sucursal AND estudio.activo = 1 )
+            LEFT JOIN estudio ON (cat_estudio.id = estudio.id_cat_estudio  AND estudio.activo = 1 and estudio.id_sucursal=".$_SESSION["id_sucursal"].")
             WHERE $tipo AND estudio.id IS NULL ";
         $data = $this->conexion->getQuery($sql);
         return $data;
@@ -104,16 +111,16 @@ class Estudios {
             ELSE cat_estudio.id_tipo_reporte 
             END id_tipo_reporte,  
             estudio.id AS id_estudio, estudio.precio_publico, estudio.precio_maquila, estudio.montaje, estudio.procesos, estudio.metodo_utilizado, estudio.volumen_requerido, estudio.porcentaje, estudio.id_indicaciones,
-            (SELECT texto FROM resultado_texto WHERE id_estudio = $id_estudio AND id_sucursal = $id_sucursal LIMIT 1  ) AS formato, cec.nombre as nombre_clase,cec.id as id_clase 
+            (SELECT texto FROM resultado_texto WHERE id_estudio = $id_estudio  LIMIT 1  ) AS formato, cec.nombre as nombre_clase,cec.id as id_clase 
             FROM cat_estudio
             LEFT JOIN departamento ON (departamento.id = cat_estudio.id_departamento)
             LEFT JOIN secciones ON (secciones.id = cat_estudio.id_secciones)
             LEFT JOIN materia_biologica ON (materia_biologica.id = cat_estudio.id_materia_biologica)
             LEFT JOIN recipiente_biologico ON (recipiente_biologico.id = cat_estudio.id_recipiente_biologico)
-            LEFT JOIN estudio ON (cat_estudio.id = estudio.id_cat_estudio AND estudio.id_sucursal = '$id_sucursal' ) 
+            LEFT JOIN estudio ON (cat_estudio.id = estudio.id_cat_estudio  and estudio.id_sucursal=".$id_sucursal." and estudio.activo=1) 
             LEFT JOIN clases_estudio_ec cec on cec.id=estudio.clase 
             WHERE cat_estudio.id = '$id_estudio' ";
-
+    //echo $sql;
         $data = $this->conexion->getQuery($sql);
         return $data;
     }

@@ -5,8 +5,12 @@ require_once( $_SERVER["DOCUMENT_ROOT"] . '/Pacientes/model/Resultados.php');
 class Imagen {
 
 	public function listaEstudiosMedico($medico){
+        
 		$resultados = new Resultados(); 
 		$res=$resultados->obtenerListaOrdenesImagenMedico($medico);
+    
+
+        
 		foreach ($res AS $row=>$item) {
 
             $arrayDocumentos=explode(',',$item->documentos);
@@ -14,18 +18,18 @@ class Imagen {
             for($j=0;$j<=count($arrayDocumentos);$j++){
                 if($j>0)
                     $documentos.='<br>';
-                $documentos.='<a href="../../reportes/'.$_SESSION['ruta'].'/resultados/'.$item->id.'_'.strtoupper($arrayDocumentos[$j]).'.pdf" target="_blank"><u>'.$arrayDocumentos[$j].'</u></a>';
+                $documentos.='<a href="reportes/'.$_SESSION['ruta'].'/resultados/'.$item->id.'_'.strtoupper($arrayDocumentos[$j]).'.pdf" target="_blank"><u>'.$arrayDocumentos[$j].'</u></a>';
             }
 
 			if($item->local=="N" && ($item->cerrado==null || $item->cerrado==0)){
-                $rutaD='../../wado/uploads/discoDuro1/'.$item->prefijo_imagen.'/'.$item->ruta;
+                $rutaD='../wado/uploads/discoDuro1/'.$item->prefijo_imagen.'/'.$item->ruta;
             }
             elseif($item->local=="N" && $item->cerrado==1){
-                $rutaD='../../wado/uploads/discoDuro1/'.$item->prefijo_imagen.'_pacientes/'.$item->ruta;
+                $rutaD='../wado/uploads/discoDuro1/'.$item->prefijo_imagen.'_pacientes/'.$item->ruta;
             }
 
             $directorioZIP=$rutaD.'/'.$item->archivo_zip;
-            $directorioZIPG=str_replace("../..","https://connectionslab.net",$rutaD).'/'.$item->archivo_zip;
+            $directorioZIPG=str_replace("../","https://samalab.connectionslab5.net/",$rutaD).'/'.$item->archivo_zip;
             $pesoZip= filesize($directorioZIP)/1024/1024;
 			//$item->archivo_zip
 			echo '<tr>
@@ -58,7 +62,7 @@ class Imagen {
 
 				echo '
                            <input type="hidden" name="reportegabinete" value="" class="d-none">
-                            <button type="submit" class="btn btn-sm btn-success rounded-circle m-1" data-toggle="tooltip" title="Reporte Cliente" onclick="window.open(\'https://reporte.imagen.connectionslab.net/sama/reporte/imprimir_rdcm.php?dcm='.$item->dcm.'&p=1\')">
+                            <button type="submit" class="btn btn-sm btn-success rounded-circle m-1" data-toggle="tooltip" title="Reporte Cliente" onclick="window.open(\'https://reporte.imagen.connectionslab5.net/sama/reporte/imprimir_rdcm.php?dcm='.$item->dcm.'&p=1\')">
                                 <i class="fas fa-file-pdf"></i>
                             </button>   
                        ';
@@ -66,11 +70,11 @@ class Imagen {
                 else
                     echo '-';
 			echo '</td><td>';
-            $thefolder = "../../wado/uploads/discoDuro1/".$item->prefijo_imagen."/".$item->ruta."/".$item->ruta;
+            $thefolder = "../wado/uploads/discoDuro1/".$item->prefijo_imagen."/".$item->ruta."/".$item->ruta;
             if ($handler = opendir($thefolder)) {
                 while (false !== ($file = readdir($handler))) {
                     if(strpos($file,"jpg")>0){
-                        $thefolder2=str_replace("../../","https://connectionslab.net/",$thefolder);
+                        $thefolder2=str_replace("","https://samalab.connectionslab5.net/",$thefolder);
                         echo '<a target="_blank" href="'.$thefolder2.'/'.$file.'">'.$file.'</a><br>';
                     }
                 }
@@ -93,14 +97,14 @@ class Imagen {
 		foreach ($res AS $row=>$item) {
 
 			if($item->local=="N" && ($item->cerrado==null || $item->cerrado==0)){
-                $rutaD='../../wado/uploads/discoDuro1/'.$item->prefijo_imagen.'/'.$item->ruta;
+                $rutaD='../../../wado/uploads/discoDuro1/'.$item->prefijo_imagen.'/'.$item->ruta;
             }
             elseif($item->local=="N" && $item->cerrado==1){
-                $rutaD='../../wado/uploads/discoDuro1/'.$item->prefijo_imagen.'_pacientes/'.$item->ruta;
+                $rutaD='../../../wado/uploads/discoDuro1/'.$item->prefijo_imagen.'_pacientes/'.$item->ruta;
             }
 
             $directorioZIP=$rutaD.'/'.$item->archivo_zip;
-            $directorioZIPG=str_replace("..","https://connectionslab.net",$rutaD).'/'.$item->archivo_zip;
+            $directorioZIPG=str_replace("..","https://samalab.connectionslab5.net/",$rutaD).'/'.$item->archivo_zip;
             $pesoZip= filesize($directorioZIP)/1024/1024;
 			//$item->archivo_zip
 			echo '<tr>
@@ -133,7 +137,7 @@ class Imagen {
 
 				echo '
                            <input type="hidden" name="reportegabinete" value="" class="d-none">
-                            <button type="submit" class="btn btn-sm btn-success rounded-circle m-1" data-toggle="tooltip" title="Reporte Cliente" onclick="window.open(\'https://reporte.imagen.connectionslab.net/sama/reporte/imprimir_rdcm.php?dcm='.$item->dcm.'&p=1\')">
+                            <button type="submit" class="btn btn-sm btn-success rounded-circle m-1" data-toggle="tooltip" title="Reporte Cliente" onclick="window.open(\'https://reporte.imagen.connectionslab5.net/sama/reporte/imprimir_rdcm.php?dcm='.$item->dcm.'&p=1\')">
                                 <i class="fas fa-file-pdf"></i>
                             </button>   
                        ';
@@ -142,11 +146,11 @@ class Imagen {
                     echo '-';
 			echo '</td>
 			<td>';
-            $thefolder = "../../wado/uploads/discoDuro1/".$item->prefijo_imagen."/".$item->ruta."/".$item->ruta;
+            $thefolder = "../../../wado/uploads/discoDuro1/".$item->prefijo_imagen."/".$item->ruta."/".$item->ruta;
             if ($handler = opendir($thefolder)) {
                 while (false !== ($file = readdir($handler))) {
                     if(strpos($file,"jpg")>0){
-                        $thefolder2=str_replace("../../","https://connectionslab.net/",$thefolder);
+                        $thefolder2=str_replace("../../","https://samalab.connectionslab5.net/",$thefolder);
                         echo '<a target="_blank" href="'.$thefolder2.'/'.$file.'">'.$file.'</a><br>';
                     }
                 }
@@ -163,14 +167,14 @@ class Imagen {
 		foreach ($res AS $row=>$item) {
 
 			if($item->local=="N" && ($item->cerrado==null || $item->cerrado==0)){
-                $rutaD='../../wado/uploads/discoDuro1/'.$item->prefijo_imagen.'/'.$item->ruta;
+                $rutaD='../wado/uploads/discoDuro1/'.$item->prefijo_imagen.'/'.$item->ruta;
             }
             elseif($item->local=="N" && $item->cerrado==1){
-                $rutaD='../../wado/uploads/discoDuro1/'.$item->prefijo_imagen.'_pacientes/'.$item->ruta;
+                $rutaD='../wado/uploads/discoDuro1/'.$item->prefijo_imagen.'_pacientes/'.$item->ruta;
             }
 
             $directorioZIP=$rutaD.'/'.$item->archivo_zip;
-            $directorioZIPG=str_replace("..","https://connectionslab.net",$rutaD).'/'.$item->archivo_zip;
+            $directorioZIPG=str_replace("..","https://connectionslab5.net",$rutaD).'/'.$item->archivo_zip;
             $pesoZip= filesize($directorioZIP)/1024/1024;
 			//$item->archivo_zip
 			echo '<tr>
@@ -201,7 +205,7 @@ class Imagen {
 
 				echo '
                            <input type="hidden" name="reportegabinete" value="" class="d-none">
-                            <button type="submit" class="btn btn-sm btn-success rounded-circle m-1" data-toggle="tooltip" title="Reporte Cliente" onclick="window.open(\'https://reporte.imagen.connectionslab.net/sama/reporte/imprimir_rdcm.php?dcm='.$item->dcm.'&p=1\')">
+                            <button type="submit" class="btn btn-sm btn-success rounded-circle m-1" data-toggle="tooltip" title="Reporte Cliente" onclick="window.open(\'https://reporte.imagen.connectionslab5.net/sama/reporte/imprimir_rdcm.php?dcm='.$item->dcm.'&p=1\')">
                                 <i class="fas fa-file-pdf"></i>
                             </button>   
                        ';
@@ -210,11 +214,11 @@ class Imagen {
                     echo '-';
 			echo '</td>
 			<td>';
-            $thefolder = "../../wado/uploads/discoDuro1/".$item->prefijo_imagen."/".$item->ruta."/".$item->ruta;
+            $thefolder = "../wado/uploads/discoDuro1/".$item->prefijo_imagen."/".$item->ruta."/".$item->ruta;
             if ($handler = opendir($thefolder)) {
                 while (false !== ($file = readdir($handler))) {
                     if(strpos($file,"jpg")>0){
-                        $thefolder2=str_replace("../../","https://connectionslab.net/",$thefolder);
+                        $thefolder2=str_replace("../","https://samalab.connectionslab5.net/",$thefolder);
                         echo '<a target="_blank" href="'.$thefolder2.'/'.$file.'">'.$file.'</a><br>';
                     }
                 }

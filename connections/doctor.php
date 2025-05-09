@@ -1,6 +1,9 @@
 <?php
 session_start();
 $id_sucursal = $_SESSION["id_sucursal"];
+$id_sucursal2 = $_SESSION["id_sucursal"];
+if($id_sucursal==156)
+    $id_sucursal2=121;
 $id_cliente=$_SESSION["id_cliente"];
 require_once('model/Catalogos.php');
 require_once('model/catalogos/Doctores.php');
@@ -10,7 +13,7 @@ $doctores = new Doctores();
 
 $estados = $catalogos->getEstados();
 $especialidad = $catalogos->getEspecialidades();
-$sucursal = $catalogos->getSucursal($id_sucursal); 
+$sucursal = $catalogos->getSucursal($id_sucursal2); 
 $prefijo_doctor_sucursal=$sucursal[0]->prefijo_doctores;
 if (isset($_REQUEST["id"])) {
     $id_doctor = $_REQUEST["id"];
@@ -18,24 +21,25 @@ if (isset($_REQUEST["id"])) {
     $municipios = $catalogos->getMunicipios($doctor[0]->estado);
 } 
 elseif(isset($_REQUEST['busqueda_paterno'])){
+    $doctor = [ (object) [] ];
     $doctor[0]->apaterno=$_REQUEST['busqueda_paterno'];
     $doctor[0]->amaterno=$_REQUEST['busqueda_materno'];
     $doctor[0]->nombre=$_REQUEST['busqueda_nombre'];
-    $Ultimoconsecutivo=$doctores->getUltimoConsecutivoSucursal($id_sucursal)[0]; 
-    if(!is_numeric($Ultimoconsecutivo->consecutivo)){
+    $Ultimoconsecutivo=$doctores->getUltimoConsecutivoSucursal($id_sucursal2)[0]; 
+    if($Ultimoconsecutivo && !is_numeric($Ultimoconsecutivo->consecutivo)){
         $Ultimoconsecutivo->consecutivo=1;
     }
 }
 else {
     $id_doctor = "";
-    $Ultimoconsecutivo=$doctores->getUltimoConsecutivoSucursal($id_sucursal)[0]; 
+    $Ultimoconsecutivo=$doctores->getUltimoConsecutivoSucursal($id_sucursal2)[0]; 
     if(!is_numeric($Ultimoconsecutivo->consecutivo)){
         $Ultimoconsecutivo->consecutivo=1;
     }
 }
 
-$listaZonas=$doctores->getZonas($id_sucursal);
-$listaPromotores=$doctores->getPromotores($id_sucursal);
+$listaZonas=$doctores->getZonas($id_sucursal2);
+$listaPromotores=$doctores->getPromotores($id_sucursal2);
 //Información para vistas
 $page_title = "Doctores";
 $usuario = $_SESSION["usuario"];

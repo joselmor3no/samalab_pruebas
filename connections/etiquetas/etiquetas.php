@@ -6,7 +6,8 @@ $codigo = $_REQUEST["codigo"];
 $alias = $_REQUEST["estudios"];
 $tipo = $_REQUEST["tipo"]; 
 
-require_once( $_SERVER["DOCUMENT_ROOT"] . '/libs/mpdf-5.7-php7-master/mpdf.php');
+require_once $_SERVER["DOCUMENT_ROOT"]  . '/vendor/autoload.php'; 
+use Mpdf\Mpdf;
 require_once($_SERVER["DOCUMENT_ROOT"] . '/model/laboratorio/Reportes.php');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/model/admision/Pacientes.php');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/model/Catalogos.php');
@@ -27,18 +28,32 @@ if ($tipo == 1) {
 } else {
     $datos = $etiquetas->getEtiquetasRecipientes($alias, $id_orden);
 }
-
-$pdf = new mPDF('UTF-8', array(25, 50), '5pt', '', 1, 1, 1, 1, 9, 9, 'L');
+$mpdfConfig = [
+    'mode' => 'utf-8',
+    'format' => [50,25], // Tamaño de página, puedes ajustarlo según tus necesidades
+    'default_font_size' => 5,
+    'margin_left' => 1,
+    'margin_right' => 1,
+    'margin_top' => 1,
+    'margin_bottom' => 1,
+    'margin_header' => 9,
+    'margin_footer' => 9,
+    'orientation' => 'P' // 'P' para retrato, 'L' para paisaje
+];
+//$pdf = new mPDF('UTF-8', array(25, 50), '5pt', '', 1, 1, 1, 1, 9, 9, 'L');
+$pdf = new Mpdf($mpdfConfig);
 $pdf->SetTitle("ETIQUETAS-" . $codigo);
 
 $i = 1;
+$codigoP=$codigo;
+  if($paciente->consecutivo_matriz>0)
+    $codigoP=$codigo.'-'.$paciente->consecutivo_matriz;
 foreach ($datos AS $row) {
-
-
+  
 
     $html = '<table width="100%" CELLPADDING=1 CELLSPACING=0 style="font-weight: bold">
         <tr>
-          <td colspan="4" style="border:1px solid">_' . ($sucursal->nombre . " - " . $sucursal->id) . '</td>
+          <td colspan="4" style="border:1px solid">' . ($sucursal->nombre . " - " . $sucursal->id) . '</td>
         </tr>
         <tr>
           <td colspan="4" style="border:1px solid; border-width: 0 1px 1px 1px;">' . $paciente->paciente . '</td>
@@ -48,7 +63,7 @@ foreach ($datos AS $row) {
         </tr>
         <tr>
           <td colspan="3" style="border:1px solid; border-width: 0 0 1px 1px;">' . ($paciente->sexo == "Nino" ? "Niño (a)" : $paciente->sexo) . '</td>
-          <td style="border:1px solid; border-width: 0 1px 1px 0; text-align: right; font-size:7pt;">' . $codigo . '</td>
+          <td style="border:1px solid; border-width: 0 1px 1px 0; text-align: right; font-size:7pt;">' . $codigoP. '</td>
         </tr>
          <tr>
           <td style="border:1px solid; border-width: 0 1px 1px 1px;">' . $paciente->edad . '</td>
@@ -79,7 +94,7 @@ $html = '<table width="100%" CELLPADDING=1 CELLSPACING=0 style="font-weight: bol
         </tr>
         <tr>
           <td colspan="3" style="border:1px solid; border-width: 0 0 1px 1px;">' . ($paciente->sexo == "Nino" ? "Niño (a)" : $paciente->sexo) . '</td>
-          <td style="border:1px solid; border-width: 0 1px 1px 0; text-align: right; font-size:7pt;">' . $codigo . '</td>
+          <td style="border:1px solid; border-width: 0 1px 1px 0; text-align: right; font-size:7pt;">' . $codigoP . '</td>
         </tr>
          <tr>
           <td style="border:1px solid; border-width: 0 1px 1px 1px;">' . $paciente->edad . '</td>

@@ -24,6 +24,7 @@ class Usuario {
 
     function registro() {
         //var_dump($_REQUEST);
+    
         $data = array(
             "id" => $_REQUEST["id_usuario"],
             "user" => $_REQUEST["user"],
@@ -32,9 +33,12 @@ class Usuario {
             "prefijo" => $_REQUEST["prefijo"],
             "entrada" => $_REQUEST["entrada"] != "" ? "'" . $_REQUEST["entrada"] . "'" : "NULL",
             "salida" => $_REQUEST["salida"] != "" ? "'" . $_REQUEST["salida"] . "'" : "NULL",
+            "lista_sucursales" => (isset($_REQUEST["lista_sucursales"]) && count($_REQUEST["lista_sucursales"])) >0 ? $_REQUEST["lista_sucursales"]  : "NULL",
             "id_tipo_empleado" => $_REQUEST["id_tipo_empleado"] != "" ? $_REQUEST["id_tipo_empleado"] : "NULL",
             "id_sucursal" => $_REQUEST["id_sucursal"],
         );
+
+        
 
         $usuarios = new Users();
         if ($_REQUEST["id_usuario"] == "") {
@@ -42,7 +46,7 @@ class Usuario {
         } else {
             $usuarios->editUsuario($data);
         }
-
+       
         $usuarios->close();
         header("Location: /usuarios?msg=ok");
     }

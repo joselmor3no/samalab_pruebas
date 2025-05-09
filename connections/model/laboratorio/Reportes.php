@@ -132,7 +132,7 @@ class Reportes {
 
     function getOrdenPaciente($id_orden) {
 
-        $sql = "SELECT orden.sucursal_maquila,paciente.id, orden.consecutivo AS codigo, CONCAT(paciente.nombre,' ', paciente.paterno, ' ', paciente.materno) AS paciente, paciente.expediente, "
+        $sql = "SELECT orden.sucursal_maquila,orden.consecutivo_matriz,paciente.id, orden.consecutivo AS codigo, CONCAT(paciente.nombre,' ', paciente.paterno, ' ', paciente.materno) AS paciente, paciente.expediente, "
                 . "DATE_FORMAT(orden.fecha_registro, '%d/%m/%Y') AS fecha, orden.id AS id_orden, DATE_FORMAT(paciente.fecha_nac, '%d/%m/%Y') AS fecha_nac, paciente.tel AS telefono, "
                 . "DATE_FORMAT(orden.fecha_registro, '%d/%m/%Y %H:%i hrs') AS fecha_hora,"
                 . "paciente.sexo, paciente.edad, paciente.tipo_edad, paciente.direccion, orden.observaciones, orden.ingles,
@@ -323,6 +323,21 @@ class Reportes {
         return $data;
     }
 
+    function getIdOrdenesPaciente($codigo, $id_paciente) {
+
+        $sql = "SELECT * 
+            FROM orden
+            WHERE consecutivo = '$codigo' AND id_paciente = $id_paciente";
+
+        $datos = $this->conexion->getQuery($sql);
+        $data = [];
+        foreach ($datos AS $row) {
+            $data['id'] = $row->id;
+            $data['sucursal'] = $row->id_sucursal;
+        }
+        return $data;
+    }
+
     function addResultadosLab($data) {
 
         if ($data["hide_tipo"] == "componente") {
@@ -462,6 +477,8 @@ class Reportes {
     }
 
     function imprimirReporte($data) {
+
+        
         $impresion = [];
         for ($i = 0; $i < count($data["imprimir"]); $i++) {
             $id_detalle_orden = $data["id_orden_detalle"][$i];
@@ -558,6 +575,7 @@ class Reportes {
                 ingles = CAST(" . $data["hide_ingles"] . " AS SIGNED) 
                 WHERE id = " . $data["id_orden"];
         $this->conexion->setQuery($sql);
+
         return $impresion;
     }
 
@@ -787,7 +805,7 @@ class Reportes {
 
     function resultadoMaquila($id_orden_maquila, $id_sucursal_maquila, $id_sucursal) {
 
-        $sql = "SELECT oe.*,o.consecutivo FROM  orden_estudio oe inner join orden o on o.id=oe.id_orden WHERE oe.id_orden = $id_orden_maquila";
+        $sql = "SELECT ce.id_tipo_reporte, oe.*,o.consecutivo,o.id as id_orden FROM  orden_estudio oe inner join orden o on o.id=oe.id_orden inner join estudio ce on ce.id_cat_estudio=oe.id_estudio and ce.id_sucursal=o.id_sucursal  WHERE oe.id_orden = $id_orden_maquila";
         $estudios = $this->conexion->getQuery($sql);
         foreach ($estudios AS $estudio) {
             //------------obteniendo el id_orden de la sucursal destino
@@ -802,6 +820,14 @@ class Reportes {
             $componetes = $this->getOrdenEstudioComponentes($id_orden_estudio_maquila, $id_sucursal_maquila);
             $sql="DELETE FROM resultado_estudio WHERE id_orden=".$id_orden_sucursal." and id_estudio=".$estudio->id_estudio;
             $this->conexion->setQuery($sql);
+
+            if($estudio->id_tipo_reporte==5){
+                $sql = "INSERT INTO `resultado_estudio_texto`(`resultado`, `id_orden`, `id_estudio`) 
+                    SELECT resultado, '".$id_orden_sucursal."', id_estudio "
+                        . "FROM resultado_estudio_texto WHERE id_orden = " . $estudio->id_orden . " and id_estudio=".$estudio->id_estudio;
+       
+                        $this->conexion->setQuery($sql);
+            }
 
             foreach ($componetes AS $row) {
                 $alias = $row->alias;

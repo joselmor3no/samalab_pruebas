@@ -17,6 +17,34 @@ class Imagenm {
         $this->conexion = new Conexion(); 
     }
 
+    function listaPacientesDentales($fechaInicial,$fechaFinal){
+        $sql="SELECT d.id as dcm,su.nombre as nombre_sucursal,su.prefijo_imagen,d.local,dr.cerrado,d.ruta,d.archivo_zip,d.tamano_zip,ce.id as id_estudio, o.id as id_orden,p.id as id_paciente,o.consecutivo,p.expediente, CONCAT(p.paterno,' ',p.materno,' ',p.nombre)as paciente,o.fecha_registro, ce.no_estudio,ce.nombre_estudio 
+            FROM orden o inner join orden_estudio oe on o.id=oe.id_orden 
+            inner join sucursal su on su.id=o.id_sucursal 
+            inner join cat_estudio ce on ce.id=oe.id_estudio 
+            inner join secciones s on s.id=ce.id_secciones 
+            inner join paciente p on p.id=o.id_paciente 
+            left join dcm d on d.id_orden=o.id 
+            left join dcm_resultado dr on d.id=dr.id_dcm 
+            where s.seccion like '%DENT%' and o.fecha_registro BETWEEN '".$fechaInicial."' and '".$fechaFinal." 23:59:59'";;
+        $data = $this->conexion->getQuery($sql);
+        return $data;
+    }
+
+    function mdlListaEstudiosXmes($fechaInicial,$fechaFinal){
+        $sql="select count(ce.no_estudio) as cantidad,ce.no_estudio,ce.nombre_estudio,
+            ce.pago_directo_imagen,sum(ce.pago_directo_imagen) as total
+            from orden o inner join orden_estudio oe on oe.id_orden=o.id 
+            inner join cat_estudio ce on ce.id=oe.id_estudio 
+            inner join dcm on dcm.id_orden=o.id and dcm.id_categoria=ce.id 
+            inner join dcm_resultado dr on dr.id_dcm=dcm.id 
+            where o.fecha_registro BETWEEN '".$fechaInicial."' and '".$fechaFinal." 23:59:59' 
+            and ce.tipo='Gabinete' and ce.pago_directo_imagen>0 and dr.cerrado=1 
+            group by ce.no_estudio order by ce.nombre_estudio;";
+        $data = $this->conexion->getQuery($sql);
+        return $data;
+    }
+
     function insertaPacienteDental($datos){
         $sql="INSERT INTO dcm(ruta,id_paciente,fecha,id_orden,id_categoria,id_usuario,prioridad,local) 
                 VALUES('".$datos['ruta']."',".$datos['id_paciente'].",'".$datos['fecha_registro']."',".$datos['id_orden'].",".$datos['id_estudio'].",1099,'media','N')";

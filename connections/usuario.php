@@ -8,11 +8,15 @@ require_once('model/catalogos/Users.php');
 $catalogos = new Catalogos();
 $tipo_empleados = $catalogos->getTipoEmpleado();
 $sucursal = $catalogos->getSucursal($id_sucursal)[0];
+$listaSucursales=$catalogos->getSucursales($id_sucursal);
+
 
 if (isset($_REQUEST["id"])) {
     $id_usuario = $_REQUEST["id"];
     $usuarios = new Users();
     $user = $usuarios->getUsuario($id_usuario);
+    $arregloSucursales=explode(",",$user[0]->acceso_sucursales);
+     
     $permisos = $usuarios->getCatPermisosUsuario();
 } else { 
     $id_usuario = "";
@@ -36,8 +40,9 @@ require("view/_blocks/footer.php");
 <link rel="stylesheet" href="assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
 <link rel="stylesheet" href="assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 
-<!-- css time -->
-
+<!-- css select -->
+<link rel="stylesheet" href="../assets/plugins/select2/css/select2.min.css">
+<link rel="stylesheet" href="../assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 <!-- daterange picker -->
 <link rel="stylesheet" href="assets/plugins/daterangepicker/daterangepicker.css">
 <link rel="stylesheet" href="assets/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
@@ -55,6 +60,7 @@ require("view/_blocks/footer.php");
 <script src="assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<script src="../assets/plugins/select2/js/select2.full.min.js"></script>
 
 <!-- Toastr -->
 <link rel="stylesheet" href="assets/plugins/toastr/toastr.min.css">

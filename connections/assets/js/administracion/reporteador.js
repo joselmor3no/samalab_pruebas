@@ -111,6 +111,28 @@ $(document).ready(function () {
         });
     })
 
+    $("#btn-generarRLC").click(function(event){
+        event.preventDefault()
+        $("#tabla_reporteLC").html('Generando...');
+        $.ajax({
+            url: "controller/administracion/administracion?opc=genera_lista_cortes",
+            type: "POST",
+            data: $("#form-global-clc").serialize(),
+
+            success: function (data) {
+                console.log("data", data);
+                $("#example2").dataTable().fnDestroy();
+                $("#tabla_reporteGC").html(data.tabla);
+                $("#example2").DataTable()
+            }, 
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+        });
+    })
+
     $("#btn-generarPaciente").click(function(event){
         event.preventDefault()
         $("#tabla_reportePaciente").html('Generando...');

@@ -114,7 +114,7 @@ class Sucursales {
 
         $data = $this->conexion->getQuery($sql);
 
-        if (count($data[0]->consecutivo) == "") {
+        if (empty(($data[0]->consecutivo))) {
             $data = $this->getCliente($id_cliente);
         }
         return $data;

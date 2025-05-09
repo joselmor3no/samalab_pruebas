@@ -21,6 +21,7 @@ class Resultados {
     }
 
     function obtenerListaOrdenesImagenMedico($medico){
+        echo '***';
         $sql="SELECT GROUP_CONCAT(DISTINCT lde.nombre) as documentos,CONCAT(p.nombre,' ',p.paterno,' ',p.materno) as paciente,s.nombre as nombre_sucursal,s.prefijo_imagen,ce.nombre_estudio, o.credito, d.ruta,d.archivo_zip, o.id,o.consecutivo,d.id as dcm,o.saldo_deudor,o.fecha_registro,dr.id as id_resultado, dr.cerrado,d.local 
         FROM orden o 
         inner join dcm d on d.id_orden=o.id 
@@ -154,7 +155,7 @@ class Resultados {
             WHERE A.reportado > 0 AND (saldo_deudor = 0 OR credito = 1 ) 
             GROUP BY id
             ORDER BY consecutivo DESC limit 100";
-
+         
         
         $data = $this->conexion->getQuery($sql);
 

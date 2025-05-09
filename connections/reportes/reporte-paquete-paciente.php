@@ -32,6 +32,7 @@ $qr = $catalogos->QR_Generator($contenidoQR);
 $ant = "";
 $paq = [];
 $paquete = [];
+
 foreach ($estudios AS $row) {
 
     if ($row->id_tipo_reporte == 4 && $row->impresion > 0) {

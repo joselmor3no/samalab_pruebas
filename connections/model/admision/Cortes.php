@@ -44,6 +44,16 @@ class Cortes {
         return $data;
     }
 
+    function getIdCorteEspecifico($numero_corte,$id_usuario) {
+        $sql = "SELECT id 
+                FROM corte 
+                WHERE id_usuario = '$id_usuario' and corte_numero='$numero_corte'
+                ORDER BY corte.id DESC";
+
+        $data = $this->conexion->getQuery($sql);
+        return $data;
+    }
+
     function addCorte($data) {
 
         $catalogos = new Catalogos();
@@ -110,6 +120,25 @@ class Cortes {
         return $data;
     }
 
+    function getIngresosUltimoCorteEspecifico($id_corte) {
+        $sql = "SELECT pago.id, CONCAT(paciente.nombre,' ', paciente.paterno, ' ', paciente.materno) AS paciente, DATE_FORMAT(pago.fecha_pago, '%d/%m/%Y %H:%i') AS fecha,
+                pago.pago, forma_pago.descripcion AS forma_pago, usuario.usuario, orden.consecutivo AS codigo
+                FROM bitacora_paciente
+                INNER JOIN orden ON orden.id = bitacora_paciente.id_orden
+                INNER JOIN paciente ON (paciente.id = orden.id_paciente)
+                INNER JOIN pago ON (orden.id = pago.id_orden)
+                INNER JOIN forma_pago ON (pago.id_forma_pago = forma_pago.id)
+                INNER JOIN usuario ON (usuario.id = bitacora_paciente.id_usuario)
+                LEFT JOIN bitacora_tarjeta ON bitacora_tarjeta.id_orden = orden.id
+                WHERE bitacora_paciente.concepto = 'PAGO REALIZADO'
+                AND pago.fecha_pago = bitacora_paciente.fecha AND pago.id_corte = '$id_corte'
+                ORDER BY pago.fecha_pago DESC";
+                echo $sql;
+
+        $data = $this->conexion->getQuery($sql);
+        return $data;
+    }
+
     function getMetodoIngresosUltimoCorte() {
         $id_sucursal = $_SESSION["id_sucursal"];
 
@@ -123,6 +152,25 @@ class Cortes {
                 LEFT JOIN bitacora_tarjeta ON bitacora_tarjeta.id_orden = orden.id
                 WHERE bitacora_paciente.concepto = 'PAGO REALIZADO'  
                 AND pago.fecha_pago = bitacora_paciente.fecha AND pago.id_corte = (SELECT MAX(id) FROM corte WHERE id_usuario IN (SELECT id FROM usuario WHERE id_sucursal = $id_sucursal))
+                GROUP BY forma_pago.id";
+
+        $data = $this->conexion->getQuery($sql);
+        return $data;
+    }
+
+    function getMetodoIngresosUltimoCorteEspecifico($id_corte) {
+        $id_sucursal = $_SESSION["id_sucursal"];
+
+        $sql = "SELECT forma_pago.descripcion AS metodo, SUM(pago.pago) AS total
+                FROM bitacora_paciente
+                INNER JOIN orden ON orden.id = bitacora_paciente.id_orden
+                INNER JOIN paciente ON (paciente.id = orden.id_paciente)
+                INNER JOIN pago ON (orden.id = pago.id_orden)
+                INNER JOIN forma_pago ON (pago.id_forma_pago = forma_pago.id)
+                INNER JOIN usuario ON (usuario.id = bitacora_paciente.id_usuario)
+                LEFT JOIN bitacora_tarjeta ON bitacora_tarjeta.id_orden = orden.id
+                WHERE bitacora_paciente.concepto = 'PAGO REALIZADO'  
+                AND pago.fecha_pago = bitacora_paciente.fecha AND pago.id_corte = '$id_corte'
                 GROUP BY forma_pago.id";
 
         $data = $this->conexion->getQuery($sql);
@@ -158,6 +206,19 @@ class Cortes {
                 FROM gasto
                 INNER JOIN usuario ON (usuario.id = gasto.id_usuario)
                 WHERE gasto.id_corte = (SELECT MAX(id) FROM corte WHERE id_usuario IN (SELECT id FROM usuario WHERE id_sucursal = $id_sucursal))
+                ORDER BY gasto.fecha DESC";
+
+        $data = $this->conexion->getQuery($sql);
+        return $data;
+    }
+
+    function getGastosUltimoCorteEspecifico($id_corte) {
+        $id_sucursal = $_SESSION["id_sucursal"];
+
+        $sql = "SELECT  concepto, importe, aclaracion, usuario.usuario, DATE_FORMAT(fecha, '%d/%m/%Y %H:%i') AS fecha
+                FROM gasto
+                INNER JOIN usuario ON (usuario.id = gasto.id_usuario)
+                WHERE gasto.id_corte = '$id_corte'
                 ORDER BY gasto.fecha DESC";
 
         $data = $this->conexion->getQuery($sql);

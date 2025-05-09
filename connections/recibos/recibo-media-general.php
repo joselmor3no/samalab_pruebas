@@ -58,12 +58,11 @@ else
     $pagod=$orden->descripcion;
 $head = '<table width="100%" style="font-size: 10pt;">
         <tr>
-            <td width="20%" align="center"><img src="../../images-sucursales/' . $sucursal->img . '" style="height: 100px" /> </td> 
-            <td width="5%"></td>
+            <td width="25%" align="center"><img src="../../images-sucursales/' . $sucursal->img . '" style="height: 150px" /> </td> 
             <td width="75%">
                 <span style="font-weight: bold">Fecha Registro: </span>' . $orden->fecha_orden . ' hrs &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="font-weight: bold">Folio: </span><u>' . $codigo . '</u><br>
                 <span style="font-weight: bold">Paciente: </span>' . $paciente->paciente . ' <span style="font-weight: bold">Edad:</span> ' . $edad . ' <span style="font-weight: bold">Sexo:</span> ' . ($paciente->sexo == "Nino" ? "Niño (a)" : $paciente->sexo ) . '<br>
-                <span style="font-weight: bold">Tel. Pac:</span> ' . $paciente->telefono . ' <span style="font-weight: bold">Fecha de Nacimiento: </span>' . $paciente->fecha_nac . '<br>';
+                <span style="font-weight: bold">Tel. Pac:</span> ' . $paciente->telefono . ' <span style="font-weight: bold">Fecha/Nac: </span>' . $paciente->fecha_nac . ' <br><span style="font-weight: bold">Correo: </span>' . $orden->correo_paciente . '<br>';
             if($paciente->empresa!=null && $paciente->empresa!="")
                 $head.=' <span style="font-weight: bold">Empresa:</span>'.$paciente->empresa.'<br>';
             $head .='<span style="font-weight: bold">Médico:</span> ' . $doctorc . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: bold">Atendio:</span>'.$orden->nombre_usuario.'<br>
@@ -77,7 +76,7 @@ $pdf->WriteHTML($head);
 
 
 $html_estudios ='<div>FECHA DE ENTREGA: <span style="font-weight: bold"> ' . $orden_detalle[0]->fecha_entrega . '</span> </div>';
-
+$html_estudios ="";
 $html_estudios .= '<div style="height:180px;"><table width="100%" border=0 CELLSPACING=0 >
        
         <tr style="background:#366BA0; color:#fff">
@@ -96,9 +95,11 @@ $importe = 0;
 $mdescuento=0;
 $i = 0;
 $orden_detalle=array_reverse($orden_detalle);
+$secccionTomografia=0;
 foreach ($orden_detalle AS $row) {
     $sig = $row->paquete;
-
+    if($row->id_secciones==20 || $row->id_secciones==19)
+        $secccionTomografia=1;
     if ($row->paquete != "" && $sig != $ant) {
         $neto = costo_paquete($orden_detalle, $row->paquete);
         $publico = $row->precio_paquete;
@@ -121,7 +122,7 @@ foreach ($orden_detalle AS $row) {
         $i++;
     } else if ($row->paquete == "") {
 
-        $descuento = $row->precio_publico != 0 || $row->precio_neto_estudio != 0 ? (1 - ($row->precio_neto_estudio / $row->precio_publico)) * 100 : 0;
+        $descuento = ($row->precio_publico != 0 && $row->precio_neto_estudio != 0) ? (1 - ($row->precio_neto_estudio / $row->precio_publico)) * 100 : 0;
         if($descuento<0)
             $descuento=0;
 
@@ -168,8 +169,8 @@ $html_estudios .= '<tr>
 $html_estudios .= '</table></div>';
 
 //$pdf->WriteHTML($html_estudios);
-
-$html_estudios .='<table width="100%" >
+if($secccionTomografia==1){
+    $html_estudios .='<table width="100%" >
         <tr>
             <td width="20%" align="center">
                 <p align="center">
@@ -179,11 +180,38 @@ $html_estudios .='<table width="100%" >
                 </p>            
             </td> 
             <td width="80%" align="center" style="">
-                Descarga de resultados: <span style="font-weight: bold">' . $_SERVER["SERVER_NAME"] . '/Pacientes</span><br>
-                Telefono de la sucursal: <span style="font-weight: bold">' . $sucursal->tel1 . '</span>
+            <p><b>Acepto que los estudios clínicos que aqui se muestran son los que he solicitado y que cumplo totalmente con las indicaciones
+            y las condiciones necesarias para la correcta realización de los mismos</b></p>
+                Resultados en: <span style="font-weight: bold">' . $_SERVER["SERVER_NAME"] . '/Pacientes</span> | 
+                Telefono de la sucursal: <span style="font-weight: bold">Call Center 5589009409 </span><hr/>
+                <b>En el caso de tomografía y resonancia:</b> Estimado paciente le informamos que, conforme a nuestra política de devoluciones, en caso de solicitar
+                reembolso o cancelación de estudio por algún motivo ajeno al laboratorio, este seá del 70% del valor total
+                de su recibo, el cual no será negociable. El reembolso será procesado y entregado de la misma manera que fue 
+                efectuado el pago.
             </td> 
         </tr>
     </table> ';
+}
+else{
+    $html_estudios .='<table width="100%" >
+        <tr>
+            <td width="20%" align="center">
+                <p align="center">
+                    <span>Folio de descarga:</span><br>
+                    <span style="font-weight: bold">' . $paciente->expediente . '</span>
+                    <img width="120px" src="data:image/png;base64,' . $qr . '"/>     
+                </p>            
+            </td> 
+            <td width="80%" align="center" style="">
+            <p><b>Acepto que los estudios clínicos que aqui se muestran son los que he solicitado y que cumplo totalmente con las indicaciones
+            y las condiciones necesarias para la correcta realización de los mismos</b></p><br>
+                Descarga de resultados: <span style="font-weight: bold">' . $_SERVER["SERVER_NAME"] . '/Pacientes</span><br>
+                Telefono de la sucursal: <span style="font-weight: bold">Call Center 5589009409 </span>
+            </td> 
+        </tr>
+    </table> ';
+}
+
 
 $pdf->WriteHTML($html_estudios);
 $head = '<table width="100%" style="font-size: 10pt;">
@@ -193,7 +221,7 @@ $head = '<table width="100%" style="font-size: 10pt;">
             <td width="75%">
                 <span style="font-weight: bold">Fecha Registro: </span>' . $orden->fecha_orden . ' hrs &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="font-weight: bold">Folio: </span><u>' . $codigo . '</u><br>
                 <span style="font-weight: bold">Paciente: </span>' . $paciente->paciente . ' <span style="font-weight: bold">Edad:</span> ' . $edad . ' <span style="font-weight: bold">Sexo:</span> ' . ($paciente->sexo == "Nino" ? "Niño (a)" : $paciente->sexo ) . '<br>
-                <span style="font-weight: bold">Tel. Pac:</span> ' . $paciente->telefono . ' <span style="font-weight: bold">Fecha de Nacimiento: </span>' . $paciente->fecha_nac . '<br>';
+                <span style="font-weight: bold">Tel. Pac:</span> ' . $paciente->telefono . ' <span style="font-weight: bold">Fecha/Nac: </span>' . $paciente->fecha_nac . ' <br><span style="font-weight: bold">Correo: </span>' . $orden->correo_paciente . '<br>';
             if($paciente->empresa!=null && $paciente->empresa!="")
                 $head.=' <span style="font-weight: bold">Empresa:</span>'.$paciente->empresa.'<br>';
             $head .='<span style="font-weight: bold">Médico:</span> ' . $doctorc . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight: bold">Atendio:</span>'.$orden->nombre_usuario.'<br>

@@ -40,7 +40,7 @@
 
 
                         <?php  
-                            if($id_sucursal==121){
+                            if($id_sucursal==121 || $id_sucursal==156){
                                 
                                 if($doctor[0]->prefijo!=""){
                                     echo '<div class="col-md-1">
@@ -86,7 +86,7 @@
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="nombre">Nombre</label>
+                                <label for="nombre">&middot; Nombre</label>
                                 <input type="text" class="form-control form-control-border <?= $_SESSION["ruta"] != "alcala" ? "text-uppercase" : "" ?>"  name="nombre" value="<?= $doctor[0]->nombre ?>" placeholder="Nombre(s)" required="">
                                 <div class="invalid-feedback">
                                     Favor de capturar el campo Nombre
@@ -95,7 +95,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="apaterno">Apellido Paterno</label>
+                                <label for="apaterno">&middot; Apellido Paterno</label>
                                 <input type="text" class="form-control form-control-border <?= $_SESSION["ruta"] != "alcala" ? "text-uppercase" : "" ?>"  name="apaterno" value="<?= $doctor[0]->apaterno ?>" placeholder="Apellido Paterno" required="">
                                 <div class="invalid-feedback">
                                     Favor de capturar el campo Apellido Paterno
@@ -104,7 +104,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="amaterno">Apellido Materno</label>
+                                <label for="amaterno">&middot; Apellido Materno</label>
                                 <input type="text" class="form-control form-control-border <?= $_SESSION["ruta"] != "alcala" ? "text-uppercase" : "" ?>"  name="amaterno" value="<?= $doctor[0]->amaterno ?>" placeholder="Apellido Materno" required="">
                                 <div class="invalid-feedback">
                                     Favor de capturar el campo Apellido Materno
@@ -114,15 +114,15 @@
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="email">Correo eletrónico</label>
-                                <input type="text" class="form-control form-control-border"  name="email" value="<?= $doctor[0]->email ?>" placeholder="Correo eletrónico">
+                                <label for="email">&middot; Correo electrónico</label>
+                                <input type="text" class="form-control form-control-border"  name="email" value="<?= $doctor[0]->email ?>" placeholder="Correo eletrónico" required>
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="email">Promotor</label>
-                                <select class = "form-control select2" name = "id_promotor" style = "width: 100%;">
+                                <label for="email">&middot; Promotor</label>
+                                <select class = "form-control select2" name = "id_promotor" style = "width: 100%;" required>
                                     <option value = "">Selecciona a un promotor</option>
                                     <?php
                                     foreach ($listaPromotores AS $row) {
@@ -138,8 +138,8 @@
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="email">Zona</label>
-                                <select class = "form-control select2" name = "id_zona" style = "width: 100%;">
+                                <label for="email">&middot; Zona</label>
+                                <select class = "form-control select2" name = "id_zona" style = "width: 100%;" >
                                     <option value = "">Selecciona a una zona</option>
                                     <?php 
                                     foreach ($listaZonas AS $row) { 
@@ -163,8 +163,8 @@
 
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="estado">Estado</label>
-                                <select class="form-control select2" id="id_estado" name="estado" style="width: 100%;">
+                                <label for="estado">&middot; Estado</label>
+                                <select class="form-control select2" id="id_estado" name="estado" style="width: 100%;" required>
                                     <option value="-1">Selecciona un Estado</option>
                                     <?php
                                     foreach ($estados AS $row) {
@@ -180,8 +180,8 @@
 
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="municipio">Municipio</label>
-                                <select class="form-control select2" id="id_municipio" name="ciudad" style="width: 100%;">
+                                <label for="municipio">&middot; Municipio</label>
+                                <select class="form-control select2" id="id_municipio" name="ciudad" style="width: 100%;" required>
                                     <option value="-1">Selecciona un Estado</option>
                                     <?php
                                     if($doctor[0]){
@@ -198,29 +198,29 @@
 
                         <div class = "col-md-3">
                             <div class = "form-group">
-                                <label for = "cp">Código Postal</label>
-                                <input type = "text" class = "form-control form-control-border" name = "cp" value="<?= $doctor[0]->cp ?>" placeholder = "Código Postal">
+                                <label for = "cp">&middot; Código Postal</label>
+                                <input type = "text" class = "form-control form-control-border" name = "cp" value="<?= $doctor[0]->cp ?>" placeholder = "Código Postal" required>
                             </div>
                         </div>
 
                         <div class = "col-md-3">
                             <div class = "form-group">
-                                <label for = "tel">Teléfono</label>
-                                <input type = "text" class = "form-control form-control-border" name = "tel" value="<?= $doctor[0]->tel ?>" placeholder = "Teléfono">
+                                <label for = "tel">&middot; Teléfono</label>
+                                <input type = "text" class = "form-control form-control-border" name = "tel" value="<?= $doctor[0]->tel ?>" placeholder = "Teléfono" required>
                             </div>
                         </div>
                         
                         <div class = "col-md-3">
                             <div class = "form-group">
-                                <label for = "cel">Celular</label>
-                                <input type = "text" class = "form-control form-control-border" name = "cel" value="<?= $doctor[0]->celular ?>" placeholder = "Celular">
+                                <label for = "cel">&middot; Celular</label>
+                                <input type = "text" class = "form-control form-control-border" name = "cel" value="<?= $doctor[0]->celular ?>" placeholder = "Celular" required>
                             </div>
                         </div>
 
                         <div class = "col-md-3">
                             <div class = "form-group">
-                                <label for = "id_especialidad">Especialidad</label>
-                                <select class = "form-control select2" name = "id_especialidad" style = "width: 100%;">
+                                <label for = "id_especialidad">&middot; Especialidad</label>
+                                <select class = "form-control select2" name = "id_especialidad" style = "width: 100%;" required>
                                     <option value = "">Selecciona un Especialidad</option>
                                     <?php
                                     foreach ($especialidad AS $row) {
@@ -240,17 +240,17 @@
                          ?>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="descarga">Código de Descarga</label>
+                                <label for="descarga">&middot; Código de Descarga</label>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend"> 
                                         <?php if($_SESSION['id_cliente']==81): ?>
                                             <span class="input-group-text">sama1_</span>
                                             <input type="hidden" name="codigo" value="sama1">
-                                            <input type="text" class="form-control form-control-border"  name="descarga" value="<?= str_replace("sama1_", "", $doctor[0]->expediente) ?>" placeholder="Código de Descarga">
+                                            <input type="text" class="form-control form-control-border"  name="descarga" value="<?= str_replace("sama1_", "", $doctor[0]->expediente) ?>" placeholder="Código de Descarga" required>
                                         <?php else: ?>
                                             <span class="input-group-text"><?= $sucursal[0]->codigo . "_" ?></span>
                                             <input type="hidden" name="codigo" value="<?= $sucursal[0]->codigo ?>">
-                                            <input type="text" class="form-control form-control-border"  name="descarga" value="<?= str_replace($sucursal[0]->codigo . "_", "", $doctor[0]->expediente) ?>" placeholder="Código de Descarga">
+                                            <input type="text" class="form-control form-control-border"  name="descarga" value="<?= str_replace($sucursal[0]->codigo . "_", "", $doctor[0]->expediente) ?>" placeholder="Código de Descarga" required>
                                         <?php endif; ?>
                                         
                                     </div>
@@ -263,22 +263,22 @@
 
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="pass">Contraseña</label>
-                                <input type="text" class="form-control form-control-border"  name="pass" value="<?= $doctor[0]->contrasena ?>" placeholder="Contraseña">
+                                <label for="pass">&middot; Contraseña</label>
+                                <input type="text" class="form-control form-control-border"  name="pass" value="<?= $doctor[0]->contrasena ?>" placeholder="Contraseña" required>
                             </div>
                         </div>
 
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="porcentaje">(%) Laboratorio </label>
-                                <input type="text" class="form-control form-control-border"  name="porcentaje"  value="<?= $doctor[0]->porcentaje ?>" placeholder="Porcentaje (%)">
+                                <input type="text" class="form-control form-control-border"  name="porcentaje"  value="<?= $doctor[0]->porcentaje>0 ? $doctor[0]->porcentaje : 20 ?>" placeholder="Porcentaje (%)">
                             </div>
                         </div>
 
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="porcentaje">(%) Imagen </label>
-                                <input type="text" class="form-control form-control-border"  name="porcentajeI"  value="<?= $doctor[0]->porcentaje_imagen ?>" placeholder="Porcentaje (%)">
+                                <input type="text" class="form-control form-control-border"  name="porcentajeI"  value="<?= $doctor[0]->porcentaje>0 ? $doctor[0]->porcentaje : 20 ?>" placeholder="Porcentaje (%)">
                             </div>
                         </div>
 
@@ -290,7 +290,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="tipo">Tipo</label>
+                                <label for="tipo">&middot; Tipo</label>
                                 <select name="tipo" id="tipo" class="form-control" required>
                                     <option value=""></option>
                                     <option value="MEDICO">MEDICO</option>

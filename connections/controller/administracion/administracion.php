@@ -3,7 +3,9 @@ require_once( $_SERVER["DOCUMENT_ROOT"] . '/model/administracion/Administracion.
 require_once( $_SERVER["DOCUMENT_ROOT"] . '/model/Usuarios.php');
 require_once( $_SERVER["DOCUMENT_ROOT"] . '/model/Catalogos.php');
 require_once( $_SERVER["DOCUMENT_ROOT"] . '/model/catalogos/Users.php');
-require_once($_SERVER["DOCUMENT_ROOT"] . '/libs/mpdf-5.7-php7-master/mpdf.php');
+require_once $_SERVER["DOCUMENT_ROOT"]  . '/vendor/autoload.php'; 
+use Mpdf\Mpdf;
+
 class Administracion { 
 	 function __construct() {
     	 if(isset($_REQUEST['opc'])){
@@ -37,12 +39,23 @@ class Administracion {
             else if($_REQUEST['opc'] == 'imprime_pago_empresas'){
                 $this->listaImprimeOrdenesEmpresa(); 
             }
+            else if($_REQUEST['opc'] == 'genera_lista_cortes'){
+                $this->listaCortesPorFecha(); 
+            }
 
             
             
 	 	}
     }
 
+    public function listaCortesPorFecha(){
+        $administracionM=new AdministracionModel();
+    	$res=$administracionM->listaCortesPorFechaM(); 
+        echo "<pre>";
+        print_r($res);
+        echo "</pre>";
+        
+    }
     
 # pdf de pago de empresas
     public function listaImprimeOrdenesEmpresa(){
@@ -151,7 +164,12 @@ class Administracion {
                     </tr>';
 
         $html.='</tbody></table>';
-        $pdf = new mPDF('UTF-8', 'Letter', '12',0,10,10,30,20);
+        $pdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'Letter',
+            'default_font_size' => 12,
+            'default_font' => 'arial'
+        ]);
         $pdf->SetTitle("REPORTE-DEUDA-EMPRESA" . $_REQUEST['id_empresa']);
         $pdf->WriteHTML($html);
         $pdf->Output($_SERVER["DOCUMENT_ROOT"] ."/reportes/REPORTE-DEUDA-EMPRESA" . $_REQUEST['id_empresa'] . ".pdf", 'F');
@@ -231,6 +249,7 @@ class Administracion {
                                 else
                                     $row->empresa="SAMALAB TEXCOCO";
                             }
+                            
                             if($row->descuento==NULL)
                                 $row->descuento=0;
                             if($row->cancelado==1){
@@ -257,7 +276,7 @@ class Administracion {
                                     
                                 elseif($tipoDescuentoClase=="monto"){
                                     $montoDescuentoClase="$".number_format($montos_descuento_clase[0],2);
-                                    $precioPublicoDescuentoClase=floatval($ppublicos[0])-$montoDescuentoClase;
+                                    $precioPublicoDescuentoClase=floatval($ppublicos[0])-floatval($montoDescuentoClase);
                                 }
                                     
                             }
@@ -267,7 +286,10 @@ class Administracion {
                             $totalImporte=$totalImporte+$row->importe;
                             $totalACuenta=$totalACuenta+$row->acuenta;
                             $totalSaldoDudor=$totalSaldoDudor+$row->saldo_deudor;
-                            $porcentajeDescuento=floatval($descuento)*100/floatval($ppublicos[0]);
+                            if(floatval($ppublicos[0])>0)
+                                $porcentajeDescuento=floatval($descuento)*100/floatval($ppublicos[0]);
+                            else
+                            $porcentajeDescuento==0;
                             //total pagado desde tabla pago
                             $totalTPago=floatval($informacionPagos->efectivo)+floatval($informacionPagos->tarjeta)+floatval($informacionPagos->otro);
                             echo '

@@ -41,11 +41,13 @@ class Users {
     }
 
     function addUsuario($data) {
-
+        $accesoSucursales="";
+        if($data["lista_sucursales"]!="NULL")
+            $accesoSucursales=implode(',',$data["lista_sucursales"]);
         $sql = "INSERT INTO `usuario`(no, `usuario`, `contraseña`, `nombre`, `id_tipo_empleado`, "
-                . "`entrada_trabajo`, `salida_trabajo`, id_sucursal) "
+                . "`entrada_trabajo`, `salida_trabajo`, id_sucursal,acceso_sucursales) "
                 . "SELECT MAX(no)+1, '" . $data["prefijo"] . "_" . $data["user"] . "', '" . $data["pass"] . "', '" . $data["nombre"] . "', " . $data["id_tipo_empleado"] . ", "
-                . "" . $data["salida"] . ", " . $data["entrada"] . ", '" . $data["id_sucursal"] . "' FROM usuario WHERE id_sucursal = " . $data["id_sucursal"] . "";
+                . "" . $data["salida"] . ", " . $data["entrada"] . ", '" . $data["id_sucursal"] . "','".$accesoSucursales."' FROM usuario WHERE id_sucursal = " . $data["id_sucursal"] . "";
 
         $this->conexion->setQuery($sql);
 
@@ -60,10 +62,15 @@ class Users {
     }
 
     function editUsuario($data) {
-
+        $accesoSucursales="";
+        if(isset($data["lista_sucursales"]) && $data["lista_sucursales"]!='' && is_array($data["lista_sucursales"]))
+            $accesoSucursales=",acceso_sucursales='".implode(',',$data["lista_sucursales"])."'";
+        $usuarioo=$data["prefijo"] . "_" . $data["user"];
+        if($_SESSION['id_sucursal']==156)
+            $usuarioo=$data["user"];
         $sql = "UPDATE `usuario` "
-                . "SET `usuario` = '" . $data["prefijo"] . "_" . $data["user"] . "', `contraseña` = '" . $data["pass"] . "', `nombre` = '" . $data["nombre"] . "', "
-                . " `id_tipo_empleado` = " . $data["id_tipo_empleado"] . ", `entrada_trabajo` = " . $data["entrada"] . ", `salida_trabajo` = " . $data["salida"] . " "
+                . "SET `usuario` = '" . $usuarioo . "', `contraseña` = '" . $data["pass"] . "', `nombre` = '" . $data["nombre"] . "', "
+                . " `id_tipo_empleado` = " . $data["id_tipo_empleado"] . ", `entrada_trabajo` = " . $data["entrada"] . ", `salida_trabajo` = " . $data["salida"] . " ".$accesoSucursales." "
                 . "WHERE id = " . $data["id"] . "";
 
         $this->conexion->setQuery($sql);
@@ -203,7 +210,7 @@ class Users {
             $_tipop="and  fp.descripcion='".$tipo_pago."' ";
         }
         $sql = "SELECT  descu.nombre as nombre_descuento,o.id as id_orden,pa.cpEmail as correo,o.telefono,GROUP_CONCAT(est.clase) as clases, GROUP_CONCAT(ece.tipo_descuento) as tipos_descuento_clase,GROUP_CONCAT(ece.porcentaje_descuento) as montos_descuento_clase,e.porcentaje as porcentaje_descuentoc,o.tipo_cliente,dep.departamento as nombre_departamento,clasee.nombre as nombre_clasee, o.tipo_orden, GROUP_CONCAT(paq.nombre) as nombre_paquete,GROUP_CONCAT(ref.codigo) as referencias, o.sucursal_maquila, GROUP_CONCAT(oe.id_estudio) as id_estudios,o.cancelado, o.consecutivo,e.nombre as empresa, o.credito,CONCAT(pa.paterno,' ',pa.materno,' ',pa.nombre) as paciente,
-        if(o.id_doctor is null,CONCAT(o.nombre_doctor,'(nr)'),CONCAT(d.alias,'-',d.apaterno,' ',d.amaterno,' ',d.nombre)) as doctor,d.alias as alias_doctor, o.fecha_registro, u.nombre as usuario, GROUP_CONCAT(ce.no_estudio) as codigos_estudio,
+        if(o.id_doctor is null,CONCAT(o.nombre_doctor,'(nr)'),CONCAT(d.apaterno,' ',d.amaterno,' ',d.nombre)) as doctor,d.alias as alias_doctor, o.fecha_registro, u.nombre as usuario, GROUP_CONCAT(ce.no_estudio) as codigos_estudio,
 GROUP_CONCAT(ce.nombre_estudio) as nombres_estudio,GROUP_CONCAT(oe.precio_neto_estudio) as precios_netos,GROUP_CONCAT(oe.precio_publicoh) as preciosp_estudio, 
 o.importe,o.importe-o.saldo_deudor as acuenta,o.saldo_deudor,GROUP_CONCAT(sec.seccion) as secciones,o.tipo_orden,if(o.sucursal_maquila>0,'maquila','-') as maquila,suc.nombre as nombre_sucursal from orden o 
         left join descuento descu on descu.id=o.id_descuento 

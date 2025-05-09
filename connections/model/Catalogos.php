@@ -13,6 +13,12 @@ class Catalogos {
         $this->conexion = new Conexion();
     }
 
+    function getTipoEstudio($idEstudio){
+        $sql = "SELECT tipo from cat_estudio where id=".$idEstudio;
+        $data = $this->conexion->getQuery($sql);
+        return $data;
+    }
+
     function getClasesEstudio(){
         $sql = "SELECT * from clases_estudio_ec order by nombre ";
         $data = $this->conexion->getQuery($sql);

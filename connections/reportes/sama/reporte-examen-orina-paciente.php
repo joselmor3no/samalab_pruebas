@@ -3,7 +3,8 @@
 session_start();
 $id_sucursal = $_SESSION["id_sucursal"];
 
-require_once($_SERVER["DOCUMENT_ROOT"] . '/libs/mpdf-5.7-php7-master/mpdf.php');
+require_once $_SERVER["DOCUMENT_ROOT"]  . '/vendor/autoload.php'; 
+use Mpdf\Mpdf;
 require_once($_SERVER["DOCUMENT_ROOT"] . '/model/laboratorio/Reportes.php');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/controller/laboratorio/Reporte.php');
 require_once( $_SERVER["DOCUMENT_ROOT"] . '/model/Catalogos.php');
@@ -13,12 +14,19 @@ $expediente = $_REQUEST["expediente"];
 $laboratorio = $_REQUEST["lab"];
 
 $reportes = new Reportes();
-$id_orden = $reportes->getIdOrden($codigo, $id_sucursal);
+$catalogos = new Catalogos();
+if($_REQUEST['lab']==0){
+    $datos= $reportes->getIdOrdenesPaciente($codigo, $_SESSION["id_paciente"]);
+    $id_orden=$datos['id'];
+    $id_sucursal=$datos['sucursal'];
+    
+}else{
+    $id_orden = $reportes->getIdOrden($codigo, $id_sucursal);
+}
+
 $estudios = $reportes->estudiosPacientesImprimir($id_orden, $expediente, $id_sucursal);
 $paciente = $reportes->getOrdenPaciente($id_orden)[0];
 $formato = $reportes->getFormatoLab($id_sucursal)[0];
-
-$catalogos = new Catalogos();
 $sucursal = $catalogos->getSucursal($id_sucursal)[0];
 
 //QR paciente
@@ -49,7 +57,16 @@ if (count($estudios) == 0) {
 }
 
 
-$pdf = new mPDF('UTF-8', 'Letter', $formato->punto, strtolower($formato->fuente));
+// Configuración para mPDF 8
+$config = [
+    'mode' => 'utf-8',
+    'format' => 'Letter',
+    'default_font_size' => $formato->punto,
+    'default_font' => strtolower($formato->fuente),
+];
+
+// Crear instancia de Mpdf
+$pdf = new Mpdf($config);
 $pdf->SetTitle("REPORTE-EXAMEN-ORINA-" . $codigo);
 
 $pdf->setAutoTopMargin = 'stretch';
@@ -72,7 +89,7 @@ if ($formato->color_linea == "Negro") {
 }
 
 $edad = $paciente->edad . " " . strtoupper($paciente->tipo_edad != "Anios" ? $paciente->tipo_edad : "AÑOS") . " / " . strtoupper($paciente->sexo != "Nino" ? $paciente->sexo : "NIÑO(A)");
-$age = $paciente->edad . " " . ($paciente->tipo_edad != "Anios" ? $paciente->tipo_edad : "Year") . " / " . ($paciente->sexo == "Nino" ? "Child" : $paciente->sexo == "Masculino" ? "Male" : "Female" );
+$age = $paciente->edad . " " .($paciente->tipo_edad != "Anios" ? $paciente->tipo_edad : "Years") . " / " . ($paciente->sexo == "Nino" ? "Child" : ($paciente->sexo == "Masculino" ? "Male" : "Female"));
 
 /*
 $html_paciente = "

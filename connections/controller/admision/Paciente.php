@@ -39,9 +39,10 @@ class Paciente {
     }
 
     function modificacionPacienteUsuarioMaestro(){
+
         $pacientes = new Pacientes();
         $data = $pacientes->modificacionPacienteUsuarioMaestroM();  
-        header("Location: /modificacion-paciente-admin?msg=ok");
+        header("Location: /modificacion-paciente-admin?msg=ok&codigo=".$_REQUEST['consecutivo']);
     }
 
     function ordenes() {
@@ -66,6 +67,8 @@ class Paciente {
                  if($orden)
                     $data[$row]->orden_maquila=$orden[0]->om;
             }
+
+            
         }
 
 
@@ -205,15 +208,26 @@ class Paciente {
             "cotizacion" => $_REQUEST["cotizacion"] == "on" ? "1" : "0" 
         );
 
-        $pacientes = new Pacientes();
 
+        $pacientes = new Pacientes();
+        
+        
         $data['ordenmatriz']='null';
+        $data['orden_colon']='null';
+        
         if($data['cotizacion']==0 && array_sum($data['maquila'])>0){
             $respuesta = $pacientes->addPacienteMaquila($data); 
             $data['ordenmatriz']=$respuesta['codigo'];
+            $data['id_paciente']=$respuesta['id_pacientem'];
+            $data['orden_colon']=$respuesta['codigo_colon'];
         }
-        
+        /*if($_SESSION['id_sucursal']==124){
+            return;
+        }*/
         $data = $pacientes->addPaciente($data);  
+        /*if($_SESSION['id_sucursal']==157){
+            return;
+        }*/
         $pacientes->close();
         if ($data["credito"] == 1) {
             header("Location: /registro-paciente?msg=ok");
@@ -279,6 +293,8 @@ class Paciente {
             "cotizacion" => $_REQUEST["cotizacion"] == "on" ? "1" : "0"
         );
 
+
+        
         $pacientes = new Pacientes();
         if($_REQUEST["ordenmatriz"]!="" && $_REQUEST["ordenmatriz"]!=null){
             $pacientes->modificacionMaquilaPaciente($data);

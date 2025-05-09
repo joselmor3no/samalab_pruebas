@@ -45,7 +45,7 @@ class Reporte {
         } else if ($opc == 'buscar-paciente') {
             $this->buscarPaciente();
         }else if ($opc == 'orden-complementarios') {
-            $this->buscarDComplementariosOrden(); 
+            $this->buscarDComplementariosOrden($_REQUEST['id_orden'],$_REQUEST['id_documento']); 
         }else if ($opc == 'guarda_complementario') {
             $this->guardaDComplementariosOrden();
         }else if ($opc == 'nuevo-complementario') {
@@ -87,7 +87,7 @@ class Reporte {
     function guardaDComplementariosOrden(){
         if($_FILES['documento']["tmp_name"]){
             session_start();
-            $ruta="../../reportes/".$_SESSION['ruta']."/resultados/".$_REQUEST['ordenComplementario'].'_'.$_REQUEST['nombreComplementario'].".pdf";
+            $ruta=$_SERVER["DOCUMENT_ROOT"] ."/reportes/".$_SESSION['ruta']."/resultados/".$_REQUEST['ordenComplementario'].'_'.$_REQUEST['nombreComplementario'].".pdf";
            if(move_uploaded_file($_FILES['documento']["tmp_name"], $ruta)){
                $reportes = new Reportes();
                $respuesta = $reportes->guardaOrdenComplementario($_REQUEST['ordenComplementario'],$_REQUEST['estudioComplementario'],$_REQUEST['idComplementario']);
@@ -170,6 +170,7 @@ class Reporte {
         $interfaces = new Interfaces();
         $existeInterfaz = $interfaces->getArchivoSucursal($_SESSION['ruta']);
 
+        
         $data = $reportes->getOrdenEstudioComponentes($id_orden_estudio, $id_sucursal);
         foreach ($data AS $row) {
 
@@ -181,6 +182,7 @@ class Reporte {
             } else if ($row->id_cat_componente == 1 || $row->id_cat_componente == 2) {
 
                 if (($row->resultado == '' || $row->resultado == null) && $existeInterfaz == 1) {
+                    
                     $resultadoInterfaz = $interfaces->getResultadoInterfaz($_SESSION['ruta'], $row->id_estudio, $row->interfaz_letra, $row->consecutivo_orden, $row->numero_estudio);
                     $row->resultado = $resultadoInterfaz;
                 }
@@ -190,6 +192,7 @@ class Reporte {
                     "edad" => $edad,
                     "tipo_edad" => $tipo_edad,
                     "sexo" => $sexo
+                    
                 );
 
                 $referencia = $reportes->getReferenciaNumerico($paciente);
@@ -199,6 +202,7 @@ class Reporte {
                 $datos[] = array(
                     "componente" => $row,
                     "referencia" => $referencia[0],
+                    "existeInt" => $existeInterfaz,
                     "formula" => $formula[0],
                     "tabla" => $tabla[0]->valor
                 );
@@ -255,11 +259,12 @@ class Reporte {
         $reportes = new Reportes();
         $estudios = $reportes->imprimirReporte($_REQUEST);
 
+        
         foreach ($estudios AS $row) {
             if ($row["id_tipo_reporte"] == 1) {
-                $bh = "1";
+                $bh[] = "1";
             } else if ($row["id_tipo_reporte"] == 2) {
-                $ego = "1";
+                $ego[] = "1";
             } else if ($row["id_tipo_reporte"] == 3) {
                 $estandar[] = "1";
             } else if ($row["id_tipo_reporte"] == 4) {
@@ -276,6 +281,7 @@ class Reporte {
         $formatos[] = is_array($paquete) && count($paquete) > 0 ? "PAQUETE" : "";
         $formatos[] = is_array($texto) && count($texto) > 0 ? "TEXTO" : "";
 
+        
         $reportes->close();
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode($formatos);

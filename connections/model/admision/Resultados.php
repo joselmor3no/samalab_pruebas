@@ -19,6 +19,24 @@ class Resultados {
         $this->conexion = new Conexion();
     }
 
+    function getResultadosImagen($fecha_ini, $fecha_fin, $id_sucursal) {
+
+        $sql = "SELECT dcm.local,dcm.ruta, o.id,p.tel AS telefono,dcm.id as id_dcm,e.nombre as empresa,dr.id as id_dcmr, 
+        o.consecutivo,CONCAT(p.nombre,' ',p.paterno,' ',p.materno) as paciente, p.cpEmail AS correo,
+        o.fecha_registro,ce.nombre_estudio as estudio,o.saldo_deudor,o.credito,p.expediente,dr.cerrado  
+            FROM orden o 
+            inner join orden_estudio oe on oe.id_orden=o.id 
+            inner join cat_estudio ce on ce.id=oe.id_estudio
+            inner join paciente p on p.id=o.id_paciente
+            inner join dcm on dcm.id_orden=o.id and dcm.id_categoria=ce.id
+            left join empresa e on e.id=o.id_empresa 
+            left join dcm_resultado dr on dr.id_dcm=dcm.id 
+            where o.fecha_registro BETWEEN '$fecha_ini' AND '$fecha_fin 23:59:59' and o.id_sucursal=$id_sucursal";
+         
+        $data = $this->conexion->getQuery($sql);
+        return $data;
+    }
+
     function getResultados($fecha_ini, $fecha_fin, $id_sucursal) {
 
         $sql = "SELECT *, COUNT(*) AS estudios, SUM(reportado) AS reportado  

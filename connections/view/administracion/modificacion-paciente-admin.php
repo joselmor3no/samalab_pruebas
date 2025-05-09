@@ -91,7 +91,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> 
 
                             <div class = "col-md-4">
                                 <div class="row">
@@ -113,8 +113,65 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-4 mt-3">
+                                <h3>Pagos:</h3>
+                   
+                            </div>
 
-         
+                            <div class="col-8 mt-3">
+                                <h3>Modificacion de Maquila</h3>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <h5>Código Proceso:<?=$orden->consecutivo_matriz=='' ? 'NO' : $orden->consecutivo_matriz ?></h5>
+                                        <input type="hidden" name='econsecutivo_matriz' value='<?=$orden->consecutivo_matriz?>'>
+                                    </div>
+                                    <div class="col-4">
+                                        <h5>Código Colón:<?=$orden->consecutivo_maquila_imagen=='' ? 'NO' : $orden->consecutivo_maquila_imagen?></h5>
+                                        <input type="hidden" name='econsecutivo_maquila_imagen' value='<?=$orden->consecutivo_maquila_imagen?>'>
+                                    </div>
+                                    <div class="col-4">
+                                        <h5>Modificar Maquila: <input type="checkbox" name="modificar_maquila"></h5>
+                                       
+                                    </div>
+                                </div>
+                                
+                                
+                                
+                                <table class="table">
+                                    <thead>
+                                        <th>Estudio</th>
+                                        <th>Estatus</th>
+                                        <th>Maquila</th>
+                                        <th>-</th>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                            foreach($detalle as $row=>$item){
+                                                $reportado=$item->reportado==0 ? 'NO' : 'SI';
+                                                echo '<tr>
+                                                    <td>'.$item->nombre_estudio.'</td>
+                                                    <td>'.$reportado.'</td>
+                                                    <td>'.$item->envio_maquila.'</td>
+                                                    <td>
+                                                    <input type="hidden" name="eid_estudio[]" value="'.$item->id_estudio.'">
+                                                    <input type="hidden" name="etipo_estudio[]" value="'.$item->tipo.'">
+                                                    ';
+
+                                                    
+                                                        $selectedSI=$item->envio_maquila=='SI' ? 'selected' : '';
+                                                        $selectedNO=$item->envio_maquila=='NO' ? 'selected' : '';
+                                                    echo '<select name="eenvio_maquila[]" class="form-control h-100" >
+                                                            <option value="1" '.$selectedSI.'>SI</option>
+                                                            <option value="0" '.$selectedNO.'>NO</option>
+                                                        </select>';
+
+                                                echo '</td>
+                                                </tr>';
+                                            }
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
 
                         </div>
 

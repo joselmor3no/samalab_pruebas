@@ -14,12 +14,13 @@ $sucursal = $catalogos->getSucursal($id_sucursal);
 
 
 $empresas = new Empresas();
-$empresa = $empresas->getEmpresa($id_empresa); 
-$clasesEstudio=$empresas->getClasesEstudio();
-$clasesEstudioEmpresa=$empresas->getClasesEstudioEmpresa($id_empresa);
+if(!empty($id_empresa)){
+    $empresa = $empresas->getEmpresa($id_empresa); 
+    $clasesEstudio=$empresas->getClasesEstudio();
+    $clasesEstudioEmpresa=$empresas->getClasesEstudioEmpresa($id_empresa);
+    $municipios = $catalogos->getMunicipios($empresa[0]->estado);
+}
 
-
-$municipios = $catalogos->getMunicipios($empresa[0]->estado);
 
 
 //Información para vistas

@@ -47,6 +47,7 @@
                                 </div>
                             </div>
                         </div>
+                        
                         <div class = "col-md-6">
                             <div class = "form-group">
                                 <label for = "nombre">Nombre Completo</label>
@@ -56,6 +57,32 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        <?php  
+        
+                        if( isset($_SESSION["usuario_sistema"]) && $_SESSION["usuario_sistema"]==1):
+                        
+                            
+                        ?>
+                            <div class="col-md-12">
+                                <div class = "form-group">
+                                    <label for = "nombre">Acceso a sucursales:</label>
+                                    <select class="select2"  name="lista_sucursales[]" id="lista_sucursales" multiple="multiple" data-placeholder="Elija las sucursales" data-dropdown-css-class="select2-purple" style="width: 100%;">
+                                    <?php 
+            
+                                        foreach ($listaSucursales as $row => $item) {
+                                            $sel='';
+                                            if (isset($arregloSucursales) && in_array($item->id, $arregloSucursales)) {
+                                                $sel = ' selected="selected" ';
+                                            }
+                                            echo '<option '.$sel.' value="'.$item->id.'">'.$item->nombre.'</option>';
+                                        }
+                                    ?>
+                                    </select>
+
+                                </div>
+                            </div>
+                        <?php endif;?>
                         <div class = "col-md-3">
                             <div class = "form-group">
                                 <label for = "entrada">Horario Entrada</label>

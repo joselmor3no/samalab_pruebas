@@ -98,8 +98,9 @@ class AdministracionModel {
             inner join paciente p on o.id_paciente=p.id 
             inner join estudio e on e.id_cat_estudio=oe.id_estudio and e.activo=1 and e.id_sucursal=".$_SESSION['id_sucursal']." 
             left join empresa_clase_estudio ece on ece.id_empresa=o.id_empresa and ece.id_clase=e.clase
-             where  o.id_sucursal=".$_SESSION['id_sucursal']." and o.id_Empresa=".$_REQUEST['id_empresa']." and o.credito=1 and o.cancelado=0 and (o.pago_credito=0 or o.pago_credito IS NULL) and o.fecha_registro BETWEEN  '".$_REQUEST['fecha_inicial']."' and '".$_REQUEST['fecha_final']." 23:59:59' 
+             where  o.id_sucursal=".$_SESSION['id_sucursal']." and o.id_Empresa=".$_REQUEST['id_empresa']." and o.credito=1 and o.cancelado=0 and (o.pago_credito=0 or o.pago_credito IS NULL) and o.fecha_registro BETWEEN  '".$_REQUEST['fecha_inicial']."' and '".$_REQUEST['fecha_final']." 23:59:59'  
              group by o.id";
+        //echo $sql;
         $data = $this->conexion->getQuery($sql);
         return $data;
     }

@@ -140,7 +140,7 @@
                                     <div class = "form-group row m-0">
                                         <label class="col-md-2 col-form-label" for = "medico">Médico</label>
                                         <div class="col-md-7 mb-2"> 
-                                            <input type="text" id="busca-doctor" list="opcionesDoctores" class="form-control" placeholder="buscar" name="medico" required>
+                                            <input type="text" id="busca-doctor" autocomplete="off" list="opcionesDoctores" class="form-control" placeholder="buscar" name="medico" required>
                                             <datalist id="opcionesDoctores">
                   
                                             </datalist>
@@ -353,7 +353,7 @@
                                 <div class = "col-md-2">
                                     <div class = "form-group">
                                         <div class="custom-control custom-checkbox">
-                                                <input id="maquila" name="maquila" type = "checkbox" class = "custom-control-input">
+                                                <input id="maquila" name="maquila" type = "checkbox" class = "custom-control-input" <?= ($_SESSION["id_sucursal"]==156 || $_SESSION["id_sucursal"]==157) ? 'checked' : ''?>>
                                             
                                             <label class="custom-control-label" for="maquila">Maquila a Matriz</label>
                                         </div>  

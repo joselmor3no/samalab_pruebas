@@ -1,10 +1,13 @@
 <?php 
 
-require_once( $_SERVER["DOCUMENT_ROOT"] . '/libs/mpdf-5.7-php7-master/mpdf.php');
+//require_once( $_SERVER["DOCUMENT_ROOT"] . '/libs/mpdf-5.7-php7-master/mpdf.php');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/model/laboratorio/Reportes.php');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/model/admision/Pacientes.php');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/model/Catalogos.php');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/model/admision/Pagos.php');
+
+require_once $_SERVER["DOCUMENT_ROOT"]  . '/vendor/autoload.php'; 
+use Mpdf\Mpdf;
 
 $reporte = new Reportes();
 $id_orden = $reporte->getIdOrden($codigo, $id_sucursal);

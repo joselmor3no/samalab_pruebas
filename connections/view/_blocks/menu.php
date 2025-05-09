@@ -4,6 +4,7 @@ $url = $_SERVER["REQUEST_URI"];
 
 $id_usuario = $_SESSION["id"];
 
+
 //echo '<pre>---------------------------'; print_r($_SESSION["id"]); echo '</pre>';
 $id_sesion_activa = session_id();
 
@@ -63,6 +64,18 @@ function validarPermisos($permiso) {
                         echo $usuario;
                     }
                     ?></a>
+            </div>
+        </div>
+
+        <div class="user-panel mt-3 p-2 mb-3 d-flex" style="color:white;">
+            <div class="form-group">
+                <label for="sucursal">Sucursal:</label>
+                <select id="btn-cambio-sucursal" name="sucursal" class="form-control w-100" id="sucursal" style="font-size:12px;">
+                    <?php
+                        $opciones=$usuarios->listaSucursalesAcceso($_SESSION['acceso_sucursales']);
+                        echo $opciones;
+                    ?>
+                </select>
             </div>
         </div>
 
@@ -147,6 +160,12 @@ function validarPermisos($permiso) {
                                         <p>Cotizaciones</p>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a href="registro-cotizacion" class="nav-link <?= strpos($url, '/registro-cotizacion') !== false ? "active" : "" ?>">
+                                        <i class="far fa-user nav-icon"></i>
+                                        <p>Registro Cotizaciones</p>
+                                    </a>
+                                </li>
                                 <?php
                             }
 
@@ -156,6 +175,18 @@ function validarPermisos($permiso) {
                                     <a href="resultados" class="nav-link <?= strpos($url, '/resultado') !== false ? "active" : "" ?>">
                                         <i class="far fa-paper-plane nav-icon"></i>
                                         <p>Resultados</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="resultados-imagen" class="nav-link <?= strpos($url, '/resultado-imagen') !== false ? "active" : "" ?>">
+                                        <i class="far fa-paper-plane nav-icon"></i>
+                                        <p>Resultados Imagen</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="resultados-imagen-dental" class="nav-link <?= strpos($url, '/resultado-imagen-dental') !== false ? "active" : "" ?>">
+                                        <i class="far fa-paper-plane nav-icon"></i>
+                                        <p>Resultados Dental</p>
                                     </a>
                                 </li>
                                 <?php
@@ -253,6 +284,20 @@ function validarPermisos($permiso) {
                                         <p>Lista de Reporte</p>
                                     </a>
                                 </li>
+
+                                <li class="nav-item">
+                                    <a href="dental" class="nav-link <?= strpos($url, '/dental') !== false ? "active" : "" ?>">
+                                        <i class="fas fa-list nav-icon"></i>
+                                        <p>Lista de Dental</p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="estudiosxmes" class="nav-link <?= strpos($url, '/estudiosxmes') !== false ? "active" : "" ?>">
+                                    &nbsp;&nbsp;&nbsp;<i class="fas fa-dollar-sign"></i> &nbsp;&nbsp;&nbsp;
+                                        <p>Estudios X mes</p>
+                                    </a>
+                                </li>
                                 <?php
                             }
                             if (validarPermisos("t2")) {
@@ -261,6 +306,13 @@ function validarPermisos($permiso) {
                                     <a href="tecnicos" class="nav-link <?= strpos($url, '/tecnicos') !== false ? "active" : "" ?>">
                                         <i class="fas fa-list-ol nav-icon"></i>
                                         <p>Lista Tecnicos</p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="dental" class="nav-link <?= strpos($url, '/dental') !== false ? "active" : "" ?>">
+                                        <i class="fas fa-list nav-icon"></i>
+                                        <p>Lista de Dental</p>
                                     </a>
                                 </li>
                                 <?php

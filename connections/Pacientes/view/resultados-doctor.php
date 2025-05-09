@@ -38,12 +38,14 @@
                         <?= $sucursal->tel1 . " / " . $sucursal->tel2 ?><br>
                     </div>
 
+                    
                 </div>
                 <div class="row ">
                     <div class="col-md-12 text-center">
                         <h4 class="font-weight-bold text-primary">Dr. <?= $sucursal->doctor ?></h4>
                     </div>
                 </div>
+               
                 <div class="table-responsive">
                     <table id="" class="table table-bordered table-hover dataTable">
                         <input type="hidden" id="id_sucursal" name="id_sucursal" value="<?= $sucursal->id ?>">
@@ -62,17 +64,24 @@
                             </tr>
                         </thead>
                         <tbody>
+                        
                             <?php
                             $i = 0;
+                            
                             foreach ($ordenes as $row) {
-
-                                $documentos=""; 
+                                
+                                if($arrayDocumentos){
+                                    $documentos=""; 
                                     for($j=0;$j<=count($arrayDocumentos);$j++){
                                         if($j>0)
                                             $documentos.='<br>';
                                         $documentos.='<a href="../../reportes/'.$_SESSION['ruta'].'/resultados/'.$row->id.'_'.strtoupper($arrayDocumentos[$j]).'.pdf" target="_blank"><u>'.$arrayDocumentos[$j].'</u></a>';
                                     }
+                                }
+                                
                                 ?>
+                               
+                                
                                 <tr>
                                     <td><?= $row->consecutivo?></td>
                                     <td><?= $row->paciente ?></td>
@@ -139,9 +148,10 @@
 
                                 </tr>
                                 <?php
+                                
                             }
-
-
+                           
+                            
                             $contoladorImagen->listaEstudiosMedico($id_doctor);
                                 
                             ?>

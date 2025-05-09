@@ -12,12 +12,33 @@ class Usuarios {
 
     function getUsuario($user, $pass) {
 
-        $sql = "SELECT usuario.*,sucursal.id_cliente 
+        $sql = "SELECT usuario.*,sucursal.id_cliente,usuario.acceso_sucursales,
+            sucursal.nombre as nombre_sucursal   
             FROM usuario
             INNER JOIN sucursal ON (sucursal.id = usuario.id_sucursal)
             INNER JOIN cliente ON (cliente.id = sucursal.id_cliente)
             WHERE usuario.usuario = '$user' AND usuario.contraseña = '$pass' AND ((NOW() >= TIME(usuario.entrada_trabajo)   AND NOW() <= TIME(usuario.salida_trabajo)) OR usuario.id_tipo_empleado = 1) AND usuario.activo = 1 AND cliente.inactivo = 0";
 
+        $data = $this->conexion->getQuery($sql);
+        return $data;
+    }
+
+    function listaSucursalesAcceso($listaSucursales){
+        $lista=explode(",",$listaSucursales);
+        
+        $opciones="";
+        for($i=0;$i<count($lista);$i++){
+            $seleccionado="";
+            if($lista[$i]==$_SESSION['id_sucursal'])
+                $seleccionado="selected";
+            $info=$this->informacionSucursal($lista[$i])[0];
+            $opciones.='<option value="'.$lista[$i].'" '.$seleccionado.'>'.$info->nombre.'</option>';
+        }
+        return $opciones;
+    }
+
+    function informacionSucursal($idSucursal){
+        $sql = "SELECT id,nombre from sucursal where id=".$idSucursal;
         $data = $this->conexion->getQuery($sql);
         return $data;
     }

@@ -43,23 +43,7 @@
                                 </select>
                                 <?php echo '<script>document.getElementById("fpromotores").value="'.$promotor.'"</script>' ?>
                             </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label for="">Zona</label>
-                                <select name="fzonas" id="fzonas" class="form-control">
-                                    <option value="">Sin Filtro</option>
-                                    <?php 
-                                        foreach ($listaZonas AS $row=> $item) {
-                                            echo '<option value="'.$item->id.'">'.$item->nombre.'</option>';
-                                        }
-                                     ?>
-
-                                </select>
-                                <?php echo '<script>document.getElementById("fzonas").value="'.$zona.'"</script>' ?>
-                            </div>
-                        </div>
-                        
+                        </div>                        
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="">Tipo</label>
@@ -70,41 +54,30 @@
                                 </select>
                                 <?php echo '<script>document.getElementById("ftipo").value="'.$tipo.'"</script>' ?>
                             </div>
-                        </div>
-
-                        
-                        <?php   
-                            if($id_sucursal ==121){
-                                echo '<div class="col-md-2">
-                                    <div class="form-group">
-                                        <label for="">Sucursal</label>
-                                        <select class="form-control" id="tex" name="tex">
-                                        <option value="">Sin Filtro</option>
-                                        <option value="1">Texcoco</option>    
-                                        <option value="0">Todos</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label for="">Apellidos/Alias</label>
-                                        <input type="text" name="falias"  value="'.$alias.'" class="form-control">
-                                        
-                                    </div>
-                                </div>
-                                <div class="col-md-2">';
-                            }
-                            else{
-                         ?>
-                                <div class="col-md-2">
+                        </div>     
+                        <div class="col-md-2">
                                     <div class="form-group">
                                         <label for="">Nombre/Alias</label>
                                         <input type="text" name="falias"  value="<?=$alias?>" class="form-control">
                                         
                                     </div>
-                                </div>
-                                <div class="offset-sm-2  col-md-2">
-                         <?php   } ?>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="">Prefijo</label>
+                                <select name="prefijo" id="prefijo" class="form-control" id="">
+                                    <?php
+                                        foreach ($prefijos as $key => $item) {
+                                           echo '<option value="'.$item->prefijo.'">'.$item->prefijo.'</option>';
+                                        }
+                                        
+                                    ?>
+                                </select>
+                                <?php echo '<script>document.getElementById("prefijo").value="'.$prefijo.'"</script>' ?>
+                                        
+                            </div>
+                        </div>
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label for="">&nbsp;</label>
                                 <button class="btn btn-success form-control" >Filtrar</button>
@@ -123,8 +96,8 @@
                             <th>Promotor</th>
                             <th>Zona</th>
                             <th>Especialidad</th>
-                            <th>Tipo</th>
                             <th>Celular</th>
+                            <th>Usuario</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -139,8 +112,8 @@
                                 <td><?= $row->nombre_promotor ?></td>
                                 <td><?= $row->nombre_zona ?></td>
                                 <td><?= $row->nombre_especialidad ?></td>
-                                <td><?= $row->tipo ?></td>
                                 <td><?php echo 'Cel:'.$row->celular.'<br>Tel:'.$row->tel ?></td>
+                                <td><?= $row->expediente.' | '.$row->contrasena  ?></td>
                                 <td> 
                                     <div class="row">
                                         <form class="pr-2" action="doctor"  method="POST">

@@ -19,6 +19,12 @@ class Doctores {
         $this->conexion = new Conexion();
     }
 
+    function getPrefijos(){
+        $sql = "SELECT DISTINCT d.prefijo from doctor d inner join doctor_sucursal dr on dr.id_doctor=d.id where  activo=1 order by prefijo";
+        $data = $this->conexion->getQuery($sql);
+        return $data;
+    }
+
     function actualizaPromotorM($origen,$destino,$sucursal){
         $sql="UPDATE doctor SET promotor=".$destino." where id_sucursal=".$sucursal." and promotor=".$origen." and activo=1";
         $this->conexion->setQuery($sql);
@@ -34,7 +40,7 @@ class Doctores {
 
     function buscarSugerenciasDoctores($busqueda,$id_sucursal){
         $arrayBusqueda=explode("-",$busqueda);
-        $sql = "SELECT CONCAT(d.alias,'-',d.apaterno,' ',d.amaterno,' ',d.nombre) as nombre,d.alias,d.id from doctor d inner join doctor_sucursal ds on ds.id_doctor=d.id where (CONCAT(d.alias,'-',d.apaterno,' ',d.amaterno,' ',d.nombre) like '%".$busqueda."%' or d.alias = '".$arrayBusqueda[0]."') and d.activo=1 and ds.id_sucursal=".$id_sucursal." limit 10";
+        $sql = "SELECT DISTINCT CONCAT(d.alias,'-',d.apaterno,' ',d.amaterno,' ',d.nombre) as nombre,d.alias,d.id from doctor d inner join doctor_sucursal ds on ds.id_doctor=d.id AND d.activo=1 where (CONCAT(d.alias,'-',d.apaterno,' ',d.amaterno,' ',d.nombre) like '%".$busqueda."%' or d.alias = '".$arrayBusqueda[0]."') and d.activo=1  limit 10";
         $data = $this->conexion->getQuery($sql);
         return $data;
     }
@@ -58,60 +64,28 @@ class Doctores {
         return $data;
     }
     
-    function getDoctoresFiltros($id_sucursal,$promotor,$zona,$alias,$tipo,$texcoco) {
+    function getDoctoresFiltros($id_sucursal,$promotor,$zona,$alias,$tipo,$prefijo) {
        
-        if($alias=='' && $texcoco==''){
+        if($alias==''){
             if($promotor!="")
                 $promotor=" AND p.id=".$promotor." ";
+            if($prefijo!="")
+                $prefijo=" AND d.prefijo='".$prefijo."' ";
+            else
+                $prefijo=" AND d.prefijo IS NULL ";
             if($zona!="")
                 $zona=" AND z.id=".$zona." ";
             if($especialidad!="")
                 $especialidad=" AND e.id=".$especialidad." ";
             if($tipo!="")
                 $tipo=" AND d.tipo='".$tipo."' ";
-            if($texcoco==1){
                 $sql = "SELECT d.*, p.nombre as nombre_promotor, e.especialidad as nombre_especialidad, z.nombre as nombre_zona   
                 FROM doctor d inner join doctor_sucursal ds on ds.id_doctor=d.id 
                 left join promotores p on d.promotor=p.id 
                 left join especialidad e on d.id_especialidad=e.id 
                 left join zonas z on z.id=d.zona 
-                WHERE ds.id_sucursal = '$id_sucursal' and d.alias like '%TEX%' $promotor $zona $especialidad $tipo AND d.activo = 1";
-            }
-            else{
-                $sql = "SELECT d.*, p.nombre as nombre_promotor, e.especialidad as nombre_especialidad, z.nombre as nombre_zona   
-                FROM doctor d inner join doctor_sucursal ds on ds.id_doctor=d.id 
-                left join promotores p on d.promotor=p.id 
-                left join especialidad e on d.id_especialidad=e.id 
-                left join zonas z on z.id=d.zona 
-                WHERE ds.id_sucursal = '$id_sucursal' $promotor $zona $especialidad $tipo AND d.activo = 1";
-            }
-        }
-        elseif($alias=='' && $texcoco!=''){
-            if($promotor!="")
-                $promotor=" AND p.id=".$promotor." ";
-            if($zona!="")
-                $zona=" AND z.id=".$zona." ";
-            if($especialidad!="")
-                $especialidad=" AND e.id=".$especialidad." ";
-            if($tipo!="")
-                $tipo=" AND d.tipo='".$tipo."' ";
-            if($texcoco==1){
-                $sql = "SELECT d.*, p.nombre as nombre_promotor, e.especialidad as nombre_especialidad, z.nombre as nombre_zona   
-                FROM doctor d inner join doctor_sucursal ds on ds.id_doctor=d.id 
-                left join promotores p on d.promotor=p.id 
-                left join especialidad e on d.id_especialidad=e.id 
-                left join zonas z on z.id=d.zona 
-                WHERE ds.id_sucursal = '$id_sucursal' and d.alias like '%TEX%' $promotor $zona $especialidad $tipo AND d.activo = 1";
-            }
-            else{
-                $sql = "SELECT d.*, p.nombre as nombre_promotor, e.especialidad as nombre_especialidad, z.nombre as nombre_zona   
-                FROM doctor d inner join doctor_sucursal ds on ds.id_doctor=d.id 
-                left join promotores p on d.promotor=p.id 
-                left join especialidad e on d.id_especialidad=e.id 
-                left join zonas z on z.id=d.zona 
-                WHERE ds.id_sucursal = '$id_sucursal' $promotor $zona $especialidad $tipo AND d.activo = 1";
-                 
-        }
+                WHERE d.activo = 1  $promotor $zona $especialidad $tipo $prefijo";
+            //echo $sql;
         }
         else{
             $sql = "SELECT d.*, p.nombre as nombre_promotor, e.especialidad as nombre_especialidad, z.nombre as nombre_zona   
@@ -119,7 +93,7 @@ class Doctores {
                 left join promotores p on d.promotor=p.id 
                 left join especialidad e on d.id_especialidad=e.id 
                 left join zonas z on z.id=d.zona 
-                WHERE ds.id_sucursal = '$id_sucursal' and (alias like '".$alias."' || CONCAT(d.apaterno,' ',d.amaterno) like '%".$alias."%' ) AND d.activo = 1";
+                WHERE d.activo = 1 AND (alias like '".$alias."' || CONCAT(d.apaterno,' ',d.amaterno) like '%".$alias."%' ) ";
         }
     
         $data = $this->conexion->getQuery($sql);

@@ -6,7 +6,10 @@ $id_sucursal = $_SESSION["id_sucursal"];
 
 setlocale(LC_TIME, 'es_ES.UTF-8');
 
-require_once('libs/mpdf-5.7-php7-master/mpdf.php');
+//require_once('libs/mpdf-5.7-php7-master/mpdf.php');
+require_once $_SERVER["DOCUMENT_ROOT"]  . '/vendor/autoload.php'; 
+use Mpdf\Mpdf;
+
 require_once('model/admision/Cortes.php');
 require_once('model/Catalogos.php');
 
@@ -19,7 +22,12 @@ $catalogos = new Catalogos();
 $sucursal = $catalogos->getSucursal($id_sucursal)[0];
 
 
-$pdf = new mPDF('UTF-8', 'A4', '9pt', 'arial');
+$pdf = new \Mpdf\Mpdf([
+    'mode' => 'utf-8',
+    'format' => 'A4',
+    'default_font_size' => 9,
+    'default_font' => 'arial'
+]);
 
 
 $pdf->setAutoTopMargin = 'stretch';

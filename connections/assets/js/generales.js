@@ -7,6 +7,24 @@
 
 
 $(document).ready(function () {
+    //==================== CAMBIO DE SUCURSAL EL SAMALAB
+$("#btn-cambio-sucursal").change(function(){
+    var sucursaln=$(this).val();
+    var nombres = $("#btn-cambio-sucursal option:selected").text();
+    $.ajax({
+        url: './controller/Acceso?opc=cambio_sucursal',
+        type: 'POST',
+        data: {'sucursal' : sucursaln, 'nombre_sucursal' : nombres},
+        success: function (datos) {
+            //console.log('datos:',datos)
+            if(datos=="ok")
+                location.reload();
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+
+        }
+    });
+})
 // Activamos los tooltips
     $('[data-toggle="tooltip"]').tooltip('enable');
 

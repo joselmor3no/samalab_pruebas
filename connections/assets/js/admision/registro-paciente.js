@@ -37,7 +37,7 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (data) {
                 console.log("data", data);
-                    $("#opcionesDoctores").html(data.opciones)
+                    $("#opcionesDoctores").html(data.opciones) 
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log(jqXHR);
@@ -854,7 +854,9 @@ function buscar_pacienes() {
             //console.log(data);
             $("#table-pacientes").html("");
             for (var i = 0; i < data.length; i++) {
-
+                var consecutivoColon='';
+                if(data[i].consecutivo_maquila_imagen!=null && data[i].consecutivo_maquila_imagen!='null')
+                    consecutivoColon='<BR> colon -'+data[i].consecutivo_maquila_imagen
                 $("#table-pacientes").append("<tr class=" + (data[i].cancelado == 1 ? "text-danger" : "") + ">\n\
                 <td>" + data[i].consecutivo + "</td>\n\
                 <td>" + data[i].paciente + "</td>\n\
@@ -862,7 +864,7 @@ function buscar_pacienes() {
                 <td>" + data[i].expediente + "</td>\n\
                 <td>" + data[i].fecha_orden + "</td>\n\
                 <td>" + (data[i].cancelado == 1 ? "<span class='text-danger'>CANCELADO</span>" : data[i].credito == 1 ? "<span class='text-primary'>CRÉDITO</span>" : data[i].saldo_deudor == 0 ? "<span class='text-success'>PAGADO</span>" : "<span class='text-danger'>" + formatter.format(data[i].saldo_deudor) + "</span>") + "</td>\n\
-                <td>" + data[i].orden_maquila + "</td>\n\
+                <td>" + data[i].orden_maquila + consecutivoColon +  "</td>\n\
                 <td align='center'>   \n\
                     <button class='btn btn-sm btn-info rounded-circle m-1 cargar-orden' data-id='" + data[i].id + "' title='Orden'>\n\
                         <i class='fas fa-address-card'></i>\n\
@@ -1270,7 +1272,7 @@ $(document).on('change', '#id_empresa', function () {
         $("#aumento").attr("disabled", false);
     } else {
         var cliente = $("#ruta").val();
-        if (cliente == "vilar") {//Solo descuento
+        /*if (cliente == "vilar") {//Solo descuento
             $("#id_descuento").attr("disabled", false);
             $("#aumento").attr("disabled", true);
         } else if (cliente == "alquimia") {//Solo Aumento
@@ -1282,7 +1284,7 @@ $(document).on('change', '#id_empresa', function () {
         } else {
             $("#id_descuento").attr("disabled", true);
             $("#aumento").attr("disabled", true);
-        }
+        }*/
 
 
     }

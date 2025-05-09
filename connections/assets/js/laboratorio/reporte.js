@@ -272,6 +272,7 @@ $(document).on('click', '.estudio', function () {
                            " + referencia + "</tr>");
                     } else if (data[i]["componente"].id_cat_componente == 1) {
                         var puntoDecimal = data[i].referencia == null ? 0 : data[i].referencia.decimales;
+                        data[i].referencia = data[i].referencia == null ? { referencia: 0 } : data[i].referencia;
                         var referencia = "<input type='hidden' name='val_componente_" + data[i]["componente"].id + "'  value='" + data[i]["componente"].componente + "'>" +
                                 "<input type='hidden' name='val_referencia_" + data[i]["componente"].id + "'  value='" + data[i].referencia.referencia + "'>" +
                                 "<input type='hidden' name='val_tipo_edad_" + data[i]["componente"].id + "'  value='" + data[i].referencia.tipo_edad + "'>" +
@@ -652,7 +653,7 @@ $(document).on('click', "#imprimir-reporte", function (event) {
         contentType: false,
         success: function (data) {
             location.reload();
-
+            
             var ruta = $("#ruta").val();
             var consecutivo = $("#paciente_codigo").html();
             var expediente = $("#paciente_expediente").html();

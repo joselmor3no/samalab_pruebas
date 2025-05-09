@@ -1,11 +1,12 @@
 <?php
+
 session_start();
 $id_sucursal = $_SESSION["id_sucursal"];
-
+//echo Date('Y-m-d h:i:s');
 require_once('model/catalogos/Doctores.php');
 require_once('model/Catalogos.php');
-
-$promotor=$zona=$tipo=null;
+$doctores = new Doctores();
+$promotor=$zona=$tipo=$prefijo=null;
 $alias=-1;
 $texcoco=1;
 if(isset($_REQUEST['tex']))
@@ -17,25 +18,26 @@ if(isset($_REQUEST['fpromotores'])){
 	$zona=$_REQUEST['fzonas'];
 	$alias=$_REQUEST['falias'];
 	$tipo=$_REQUEST['ftipo'];
-	$doctores = new Doctores();
-		$datos = $doctores->getDoctoresFiltros($id_sucursal,$promotor,$zona,$alias,$tipo,$texcoco);
+	$prefijo=$_REQUEST['prefijo'];
+		$datos = $doctores->getDoctoresFiltros($id_sucursal,$promotor,$zona,$alias,$tipo,$prefijo);
 }
 else{
-	$promotor=$zona=$alias=$tipo=null;
-	$doctores = new Doctores();
-	$datos = $doctores->getDoctoresFiltros($id_sucursal,$promotor,$zona,$alias,$tipo,$texcoco);
+	$promotor=$zona=$alias=$tipo=$prefijo=null;
+	$datos = $doctores->getDoctoresFiltros($id_sucursal,$promotor,$zona,$alias,$tipo,$prefijo);
 }
-
+$prefijos=$doctores->getPrefijos();
 
 
 $listaPromotores= $doctores->getPromotores($id_sucursal);
 $listaZonas= $doctores->getZonas($id_sucursal);
 
 $catalogos=new Catalogos();
-$listaEspecialidades = $catalogos->getEspecialidades();
+$listaEspecialidades = $catalogos->getEspecialidades(); 
 
 //mensaje de operacion exitosa
-$msg = $_REQUEST["msg"]; 
+$msg ="";
+if(isset($_REQUEST["msg"]))
+	$msg = $_REQUEST["msg"]; 
 
 //Información para vistas
 $page_title = "Doctores";

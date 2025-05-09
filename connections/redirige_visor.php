@@ -24,7 +24,7 @@
 	}
 
 //------------ Concatenando la URL
-	$ruta=str_replace("../wado/uploads","" , $rutaCarpetas);
+	$ruta=str_replace("wado/uploads","" , $rutaCarpetas);
 	$cadena="url=".$ruta."&carpetas=".$carpetas[0];
 	$carpetasNuevas=$carpetas[0];
 	$total=$tImagenes[0];
@@ -37,13 +37,13 @@
 
     
 
-    if($_REQUEST['cerrado']==0){
-    	$rutaNueva=str_replace("../wado/uploads/discoDuro1/".$_REQUEST['prefijo_sucursal']."/","" , $rutaCarpetas);
-	    $cadenaNueva="https://dcm-connections.connectionslab.net/visor/".$_REQUEST['prefijo_sucursal']."/".str_replace("/","-",$rutaNueva)."/".$carpetasNuevas."/".$total."/".$_REQUEST['id_dcm']."/".$_REQUEST['usuario']."/".$_REQUEST['ruta'];
+    if($_REQUEST['cerrado']!=1){
+    	$rutaNueva=str_replace("wado/uploads/discoDuro1/".$_REQUEST['prefijo_sucursal']."/","" , $rutaCarpetas);
+	    $cadenaNueva="https://dcm-connections.connectionslab4.net/visor/".$_REQUEST['prefijo_sucursal']."/".str_replace("/","-",$rutaNueva)."/".$carpetasNuevas."/".$total."/".$_REQUEST['id_dcm']."/".$_REQUEST['usuario']."/".$_REQUEST['ruta'];
     }
     else{
-    	$rutaNueva=str_replace("../wado/uploads/discoDuro1/".$_REQUEST['prefijo_sucursal']."_pacientes/","" , $rutaCarpetas);
-        $cadenaNueva="https://dcm-connections.connectionslab.net/visor/".$_REQUEST['prefijo_sucursal']."_pacientes/".str_replace("/","-",$rutaNueva)."/".$carpetasNuevas."/".$total."/".$_REQUEST['id_dcm']."/".$_REQUEST['usuario']."/".$_REQUEST['ruta'];
+    	$rutaNueva=str_replace("wado/uploads/discoDuro1/".$_REQUEST['prefijo_sucursal']."_pacientes/","" , $rutaCarpetas);
+        $cadenaNueva="https://dcm-connections.connectionslab4.net/visor/".$_REQUEST['prefijo_sucursal']."_pacientes/".str_replace("/","-",$rutaNueva)."/".$carpetasNuevas."/".$total."/".$_REQUEST['id_dcm']."/".$_REQUEST['usuario']."/".$_REQUEST['ruta'];
     }
     $cadenaNueva=str_replace("-/","/",$cadenaNueva);
 
@@ -61,10 +61,10 @@
 
 	function rutaCarpetas($nombre,$cerrado,$prefijo_sucursal){
 		if($cerrado==1){
-		    $ruta="../wado/uploads/discoDuro1/".$prefijo_sucursal."_pacientes/".$nombre."/";
+		    $ruta="wado/uploads/discoDuro1/".$prefijo_sucursal."_pacientes/".$nombre."/";
 		}
         else
-            $ruta="../wado/uploads/discoDuro1/".$prefijo_sucursal."/".$nombre."/";
+            $ruta="wado/uploads/discoDuro1/".$prefijo_sucursal."/".$nombre."/";
         //echo $ruta;
 		if(file_exists($ruta)){
 			while(count(glob($ruta,GLOB_BRACE))<10){
@@ -98,10 +98,10 @@
 
 	function listaCarpetas($nombre,$cerrado,$prefijo_sucursal){
 		if($cerrado==1){
-		    $ruta="../wado/uploads/discoDuro1/".$prefijo_sucursal."_pacientes/".$nombre."/";
+		    $ruta="wado/uploads/discoDuro1/".$prefijo_sucursal."_pacientes/".$nombre."/";
 		}
 		else{
-		    $ruta="../wado/uploads/discoDuro1/".$prefijo_sucursal."/".$nombre."/";
+		    $ruta="wado/uploads/discoDuro1/".$prefijo_sucursal."/".$nombre."/";
 		}
         //echo $ruta;
 		if(file_exists($ruta)){

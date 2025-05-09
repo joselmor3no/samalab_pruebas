@@ -59,6 +59,16 @@ class Estudio {
         } else if ($opc == 'clonar-componentes') {
             $this->clonarEstudio();
         }
+        else if ($opc == 'actualiza-interfaz-letra') {
+            $this->actualizaInterfazLetra();
+        }
+    }
+
+    function actualizaInterfazLetra(){
+        $estudios = new Estudios();
+        $res=$estudios->actualizaInterfazLetraM($_REQUEST['id_componente'],$_REQUEST['interfaz_letra']); 
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($res);
     }
 
     //Algo improvisado, falta arreglar

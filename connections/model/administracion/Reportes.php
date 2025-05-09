@@ -159,12 +159,12 @@ class Reportes {
         }
 
         $sql = "SELECT orden.consecutivo, concat(paciente.nombre,' ',paciente.paterno,' ',paciente.materno) as nombre_paciente,
-        doctor.nombre as nombre_medico, doctor.porcentaje as pago, orden.importe as total, orden.saldo_deudor as deuda,
+        CONCAT(doctor.nombre,' ',doctor.apaterno,' ',doctor.amaterno) as nombre_medico, doctor.porcentaje as pago, orden.importe as total, orden.saldo_deudor as deuda,
         orden.importe * doctor.porcentaje/ 100 AS porcentaje, doctor.id as id_doctor,doctor.alias as aliasd
         from orden
          INNER join paciente on paciente.id = orden.id_paciente
          INNER join doctor on doctor.id= orden.id_doctor
-         where orden.id_sucursal='$id_sucursal' and doctor.porcentaje > 0        
+         where orden.id_sucursal!=121 and doctor.porcentaje > 0        
          and orden.fecha_registro BETWEEN '$ini 00:00:00' AND '$fin 23:59:59'
          $where
          order by doctor.id , orden.consecutivo
@@ -654,7 +654,7 @@ function r29($id_sucursal, $ini, $fin) {
                 
        function r711($id_sucursal, $ini, $fin) {
        $sql = "SELECT o.cancelado,oe.id_paquete,paq.alias,paq.nombre as nombre_paquete, lpms2.precio_maquila as precio_maquila_paquete,lpms.precio_maquila,o.consecutivo, concat(p.nombre,' ',p.paterno,' ',p.materno) as nombre_paciente,o.fecha_registro,
-       ce.no_estudio,ce.nombre_estudio,o.consecutivo_matriz
+       ce.no_estudio,ce.nombre_estudio,o.consecutivo_matriz,o.consecutivo_maquila_imagen 
        FROM orden o
        INNER JOIN paciente p on o.id_paciente = p.id
        LEFT JOIN orden_estudio oe on o.id = oe.id_orden and oe.envio_maquila=1

@@ -145,7 +145,10 @@ class Doctor {
     }
 
     function registro() { 
+
         $doctores = new Doctores();
+        if($_REQUEST["id_sucursal"]==156)
+            $_REQUEST["id_sucursal"]=121;
         $consecutivo=$doctores->getUltimoConsecutivoSucursal($_REQUEST["id_sucursal"])[0];
  
         if(!$consecutivo->consecutivo || $consecutivo->consecutivo=="") 
@@ -179,7 +182,7 @@ class Doctor {
             "tipo" => $_REQUEST["tipo"]
 
         );
-
+        
         
         if ($_REQUEST["id_doctor"] == "") {
             $doctores->addDoctor($data);

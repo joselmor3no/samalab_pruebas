@@ -17,13 +17,25 @@ $expediente = $_REQUEST["expediente"];
 $laboratorio = $_REQUEST["lab"];
 
 $reportes = new Reportes();
-$id_orden = $reportes->getIdOrden($codigo, $id_sucursal);
+$catalogos = new Catalogos();
+
+if($_REQUEST['lab']==0){
+    $datos= $reportes->getIdOrdenesPaciente($codigo, $_SESSION["id_paciente"]);
+    $id_orden=$datos['id'];
+    $id_sucursal=$datos['sucursal'];
+    
+}else{
+    $id_orden = $reportes->getIdOrden($codigo, $id_sucursal);
+}
+
+
 $estudios = $reportes->estudiosPacientesImprimir($id_orden, $expediente, $id_sucursal);
 $paciente = $reportes->getOrdenPaciente($id_orden)[0];
 $formato = $reportes->getFormatoLab($id_sucursal)[0];
-
-$catalogos = new Catalogos();
 $sucursal = $catalogos->getSucursal($id_sucursal)[0];
+
+
+
 
 //QR paciente
 $contenidoQR = "https://" . $_SERVER['SERVER_NAME'] . "/Pacientes/controller/Acceso?opc=expediente&user=" . $expediente;
@@ -52,12 +64,6 @@ foreach ($estudios AS $row) {
 if (count($estandar) == 0) {
     return;
 }
-
-
-$formato = (object) [
-    'punto' => 8, // Ejemplo de tamaño de fuente
-    'fuente' => 'Arial' // Ejemplo de tipo de fuente
-];
 
 // Configuración para mPDF 8
 $config = [
@@ -327,21 +333,22 @@ foreach ($estandar as $estudio) {
                         </td>
                         <td width='10%'></td>
                         <td align='center' width='13%'>
-                          <font style='" . ($fuera_rango == 1 ? "font-weight: bold;" : "") . "' color='" . $color . "'>  " . number_format($componente["componente"]->resultado, $componente["referencia"]->decimales) . "</font>
-                        </td>
+                     <font style='" . ($fuera_rango == 1 ? "font-weight: bold;" : "") . "' color='" . $color . "'>  " . (is_numeric($componente["componente"]->resultado) && is_numeric($componente["referencia"]->decimales) ?  number_format($componente["componente"]->resultado,  $componente["referencia"]->decimales) : "") . "</font>  
+                    </td>
                         <td width='10%'> " . $marca . "</td>";
                 if ($componente["tabla"] != NULL) {
                     $cuerpo .= "
-                        <td  width='34%' colspan='4'>
+                        <td align='center' width='34%' colspan='4'>
                             " . $componente["tabla"] . "
                         </td>
                     </tr>";
                 } else {
                     $cuerpo .= "      
                                   
-                        <td align='right' width='15%'>" . number_format($componente["referencia"]->baja, $componente["referencia"]->decimales) . "</td>
+                        <td align='right' width='15%'>" .  (is_numeric($componente["referencia"]->baja) && is_numeric($componente["referencia"]->decimales) ? number_format($componente["referencia"]->baja, $componente["referencia"]->decimales) : "") . "</td>
                         <td align='center' width='3%'> " . $formato->separador . " </td>
-                        <td align='left' width='8%'>" . number_format($componente["referencia"]->alta, $componente["referencia"]->decimales) . "</td>
+                        <td align='left' width='8%'>" .  (is_numeric($componente["referencia"]->alta) && is_numeric($componente["referencia"]->decimales) ? number_format($componente["referencia"]->alta, $componente["referencia"]->decimales) : "") . "</td>
+
                         <td align='left' width='8%'> " . $componente["referencia"]->unidad . "</td>
                             
                     </tr>";
@@ -371,7 +378,7 @@ foreach ($estandar as $estudio) {
                         </td>";
                 if ($componente["tabla"] != NULL) {
                     $cuerpo .= "
-                        <td width='34%' colspan='4'>
+                        <td align='center' width='34%' colspan='4'>
                             " . $componente["tabla"] . "
                         </td>
                     </tr>";

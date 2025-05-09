@@ -200,6 +200,10 @@
                                                                 <button type="button" class="btn btn-block bg-gradient-warning btn-global" data-toggle="modal" data-target="#modal-global-pacientes" title="<?= $row->tooltip ?>">
                                                                     <i class="fa fa-file-pdf pr-2"></i> <?= $row->descripcion ?>
                                                                 </button>
+                                                            <?php }else if($row->global==4){?>
+                                                                <button type="button" class="btn btn-block bg-gradient-warning btn-global" data-toggle="modal" data-target="#modal-lista-cortes" title="<?= $row->tooltip ?>">
+                                                                    <i class="fa fa-file-pdf pr-2"></i> <?= $row->descripcion ?>
+                                                                </button>
                                                             <?php } ?>
                                                         </div>
                                                         <?php 
@@ -535,6 +539,64 @@
   </div>
 </div>
 
+
+<!-- Modal para la lista de cortes ya cerrados -->
+<div class="modal fade"  id="modal-lista-cortes" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl " >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Lista de cortes generados</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="form-global-clc" method="POST">
+
+            <div class="row">
+                <div class="col-3">
+                    <div class="form-group">
+                        <label for="fecha_inicialgc">Fecha Inicial</label>
+                        <input type="date" class="form-control" name="fecha_inicial" id="fecha_inicialgc">
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-group">
+                        <label for="fecha_inicialgc">Fecha Final</label>
+                        <input type="date" class="form-control" name="fecha_final" id="fecha_finalgc">
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="form-group">
+                        <label for="">&nbsp;</label>
+                        <button id="btn-generarRLC" class="btn btn-success form-control" style="width:100%;">Buscar</button>
+                    </div>
+                    
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col-12" style="overflow-x:scroll;">
+                <table id="example3" class="table table-striped" style="width:100%;font-size:12px;">
+                  <thead>
+                        <th>#</th>
+                        <th>Numero</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Usuario</th>
+                        <th>-</th>
+                  </thead>
+                  <tbody id="tabla_reporteLC">
+
+                  </tbody>
+              </table>
+            </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
 
 <!-- Modal para el Reporte de paciente -->
 <div class="modal fade"  id="modal-global-pacientes" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

@@ -5,7 +5,9 @@ $id_sucursal = $_SESSION["id_sucursal"];
 
 setlocale(LC_TIME, 'es_ES.UTF-8');
 
-require_once('libs/mpdf-5.7-php7-master/mpdf.php');
+//require_once('libs/mpdf-5.7-php7-master/mpdf.php');
+require_once $_SERVER["DOCUMENT_ROOT"]  . '/vendor/autoload.php'; 
+use Mpdf\Mpdf;
 require_once('model/administracion/Reportes.php');
 require_once('model/Catalogos.php');
 
@@ -21,17 +23,47 @@ $catalogos = new Catalogos();
 $sucursal = $catalogos->getSucursal($id_sucursal)[0];
 
 if ($siglas == "rx33") {
-    $pdf = new mPDF('', '', 0, '', 15, 15, 15, 15, 8, 8);
+    $pdf = new \Mpdf\Mpdf([
+        'margin_left' => 15,      // Margen izquierdo
+        'margin_right' => 15,     // Margen derecho
+        'margin_top' => 15,       // Margen superior
+        'margin_bottom' => 15,    // Margen inferior
+        'margin_header' => 8,     // Margen para el encabezado
+        'margin_footer' => 8      // Margen para el pie de página
+    ]);
+    
+
 }
 else{
-    $pdf = new mPDF('UTF-8', 'A4', '9pt', 'arial');
+    $pdf = new \Mpdf\Mpdf([
+    'mode' => 'utf-8',               // Establecer el modo a 'utf-8'
+    'format' => 'A4',                // Tamaño de página A4
+    'default_font_size' => 9,         // Tamaño de fuente 9pt
+    'default_font' => 'arial'         // Fuente por defecto Arial
+]);
+
 }
 
 if ($siglas == "rx34") {
-    $pdf = new mPDF('', '', 0, '', 15, 15, 15, 15, 8, 8);
+    $pdf = new \Mpdf\Mpdf([
+        'margin_left' => 15,      // Margen izquierdo
+        'margin_right' => 15,     // Margen derecho
+        'margin_top' => 15,       // Margen superior
+        'margin_bottom' => 15,    // Margen inferior
+        'margin_header' => 8,     // Margen para el encabezado
+        'margin_footer' => 8      // Margen para el pie de página
+    ]);
+    
+
 }
 else{
-    $pdf = new mPDF('UTF-8', 'A4', '9pt', 'arial');
+    $pdf = new \Mpdf\Mpdf([
+    'mode' => 'utf-8',               // Establecer el modo a 'utf-8'
+    'format' => 'A4',                // Tamaño de página A4
+    'default_font_size' => 9,         // Tamaño de fuente 9pt
+    'default_font' => 'arial'         // Fuente por defecto Arial
+]);
+
 }
 $pdf->SetTitle("REPORTE");
 
@@ -4593,7 +4625,7 @@ if ($siglas == "rx711") {
             <th ".$estilo.">Consecutivo: $consecutivo_</th>
             <th ".$estilo.">Nombre: $row->nombre_paciente</th>
             <th ".$estilo.">Fecha: $row->fecha_registro</th>
-            <th ".$estilo."> Consecutivo Matriz: $row->consecutivo_matriz</th>
+            <th ".$estilo."> Consecutivo Matriz:P: $row->consecutivo_matriz | C: $row->consecutivo_maquila_imagen</th>
             
             
             </tr>
@@ -4639,8 +4671,10 @@ if ($siglas == "rx711") {
        }
        else{
            if($row->id_paquete!=$paquete || $paciente!=$row->consecutivo){
-               $total=$total+$row->precio_maquila_paquete;
-               $table .= '
+               if($row->cancelado==0){
+                $total=$total+$row->precio_maquila_paquete;
+               }
+                $table .= '
                 <tr>
                 <td>'.$row->alias.'</td> 
                 <td>'.$row->nombre_paquete.'</td>  
